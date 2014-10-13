@@ -12,12 +12,12 @@ import (
 func TestVaultfile(t *testing.T) {
 	g := Goblin(t)
 	g.Describe("Vaultfile", func() {
+		g.AfterEach(func() {
+			os.Remove("Vaultfile")
+		})
+
 		g.Describe("#Save", func() {
 			g.It("Should work", func() {
-				defer func() {
-					os.Remove("Vaultfile")
-				}()
-
 				v := &Vaultfile{}
 				v.Recipients = []string{"a@a.com"}
 				v.Save()
@@ -35,11 +35,11 @@ func TestVaultfile(t *testing.T) {
 	})
 
 	g.Describe("LoadVaultfile", func() {
-		g.It("Should load existing Vaultfile", func() {
-			defer func() {
-				os.Remove("Vaultfile")
-			}()
+		g.AfterEach(func() {
+			os.Remove("Vaultfile")
+		})
 
+		g.It("Should load existing Vaultfile", func() {
 			v := &Vaultfile{}
 			v.Recipients = []string{"a@a.com"}
 			v.Save()
@@ -51,10 +51,6 @@ func TestVaultfile(t *testing.T) {
 		})
 
 		g.It("Should return a new Vaultfile if it doesn't exist", func() {
-			defer func() {
-				os.Remove("Vaultfile")
-			}()
-
 			v, err := LoadVaultfile()
 
 			g.Assert(err == nil).IsTrue()
