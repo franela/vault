@@ -1,32 +1,33 @@
 package init
 
 import (
-	"github.com/franela/vault/vault"
 	"os"
-	"reflect"
 	"testing"
+
+	. "github.com/franela/goblin"
+	"github.com/franela/vault/vault"
 )
 
-func TestVaultfileCreationWithRecipients(t *testing.T) {
-	defer func() {
-		os.Remove("Vaultfile")
-	}()
+func TestInit(t *testing.T) {
+	g := Goblin(t)
 
-	desiredRecipients := []string{"a@a.com", "b@b.com"}
-	c, _ := Factory()
-	exitCode := c.Run(desiredRecipients)
+	g.Describe("Init", func() {
+		g.Describe("#Run", func() {
+			g.It("Should create a Vaultfile with recipients", func() {
+				defer func() {
+					os.Remove("Vaultfile")
+				}()
 
-	v, err := vault.LoadVaultfile()
+				desiredRecipients := []string{"a@a.com", "b@b.com"}
+				c, _ := Factory()
+				exitCode := c.Run(desiredRecipients)
 
-	if err != nil {
-		t.Error(err)
-	}
+				v, err := vault.LoadVaultfile()
 
-	if !reflect.DeepEqual(v.Recipients, desiredRecipients) {
-		t.Errorf("Vaultfile recipients are not the expected ones")
-	}
-
-	if exitCode != 0 {
-		t.Error("Expected exist code 0")
-	}
+				g.Assert(err == nil).IsTrue()
+				g.Assert(v.Recipients).Equal(desiredRecipients)
+				g.Assert(exitCode).Equal(0)
+			})
+		})
+	})
 }

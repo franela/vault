@@ -4,67 +4,61 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"os"
-	"reflect"
 	"testing"
+
+	. "github.com/franela/goblin"
 )
 
-func TestSave(t *testing.T) {
-	defer func() {
-		os.Remove("Vaultfile")
-	}()
+func TestVaultfile(t *testing.T) {
+	g := Goblin(t)
+	g.Describe("Vaultfile", func() {
+		g.Describe("#Save", func() {
+			g.It("Should work", func() {
+				defer func() {
+					os.Remove("Vaultfile")
+				}()
 
-	v := &Vaultfile{}
-	v.Recipients = []string{"a@a.com"}
-	v.Save()
+				v := &Vaultfile{}
+				v.Recipients = []string{"a@a.com"}
+				v.Save()
 
-	content, err := ioutil.ReadFile("Vaultfile")
-	if err != nil {
-		t.Error("Vaultfile should exist")
-	}
+				content, err := ioutil.ReadFile("Vaultfile")
+				g.Assert(err == nil).IsTrue()
 
-	v2 := &Vaultfile{}
-	er := json.Unmarshal(content, v2)
-	if er != nil {
-		t.Error("Vaultfile is not a valid")
-	}
+				v2 := &Vaultfile{}
+				er := json.Unmarshal(content, v2)
+				g.Assert(er == nil).IsTrue()
 
-	if !reflect.DeepEqual(v, v2) {
-		t.Errorf("Vaultfile recipients are not the expected ones")
-	}
-}
+				g.Assert(v).Equal(v2)
+			})
+		})
+	})
 
-func TestLoadExisting(t *testing.T) {
-	defer func() {
-		os.Remove("Vaultfile")
-	}()
+	g.Describe("LoadVaultfile", func() {
+		g.It("Should load existing Vaultfile", func() {
+			defer func() {
+				os.Remove("Vaultfile")
+			}()
 
-	v := &Vaultfile{}
-	v.Recipients = []string{"a@a.com"}
-	v.Save()
+			v := &Vaultfile{}
+			v.Recipients = []string{"a@a.com"}
+			v.Save()
 
-	v2, err := LoadVaultfile()
+			v2, err := LoadVaultfile()
 
-	if err != nil {
-		t.Error(err)
-	}
+			g.Assert(err == nil).IsTrue()
+			g.Assert(v).Equal(v2)
+		})
 
-	if !reflect.DeepEqual(v, v2) {
-		t.Errorf("Vaultfile recipients are not the expected ones")
-	}
-}
+		g.It("Should return a new Vaultfile if it doesn't exist", func() {
+			defer func() {
+				os.Remove("Vaultfile")
+			}()
 
-func TestLoadUnexisting(t *testing.T) {
-	defer func() {
-		os.Remove("Vaultfile")
-	}()
+			v, err := LoadVaultfile()
 
-	v, err := LoadVaultfile()
-
-	if err != nil {
-		t.Error(err)
-	}
-
-	if !reflect.DeepEqual(v, &Vaultfile{}) {
-		t.Errorf("Vaultfile recipients are not the expected ones")
-	}
+			g.Assert(err == nil).IsTrue()
+			g.Assert(v).Equal(&Vaultfile{})
+		})
+	})
 }
