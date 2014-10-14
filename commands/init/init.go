@@ -1,11 +1,9 @@
 package init
 
 import (
-	"log"
-
-	"github.com/mitchellh/cli"
-
+	"github.com/franela/vault/ui"
 	"github.com/franela/vault/vault"
+	"github.com/mitchellh/cli"
 )
 
 const initHelpText = `
@@ -34,7 +32,7 @@ func (initCommand) Run(args []string) int {
 	err := v.Save()
 
 	if err != nil {
-		log.Print(err)
+		ui.Printf("%s", err)
 		return 1
 	}
 

@@ -3,9 +3,9 @@ package set
 import (
 	"flag"
 	"github.com/franela/vault/gpg"
+	"github.com/franela/vault/ui"
 	"github.com/franela/vault/vault"
 	"github.com/mitchellh/cli"
-	"log"
 )
 
 const setHelpText = `
@@ -27,7 +27,7 @@ func (setCommand) Run(args []string) int {
 	vaultFile, err := vault.LoadVaultfile()
 
 	if err != nil {
-		log.Print(err)
+		ui.Printf("%s", err)
 		return 1
 	}
 
@@ -47,7 +47,7 @@ func (setCommand) Run(args []string) int {
 		path := args[0]
 		err := gpg.EncryptFile(path, fileName, vaultFile.Recipients)
 		if err != nil {
-			log.Print(err)
+			ui.Printf("%s", err)
 			return 1
 		}
 	} else {
@@ -57,7 +57,7 @@ func (setCommand) Run(args []string) int {
 		err := gpg.Encrypt(path, text, vaultFile.Recipients)
 
 		if err != nil {
-			log.Print(err)
+			ui.Printf("%s", err)
 			return 1
 		}
 	}

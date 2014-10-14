@@ -12,7 +12,7 @@ import (
 func TestVaultfile(t *testing.T) {
 	g := Goblin(t)
 	g.Describe("Vaultfile", func() {
-    wd, _ := GetHomeDir()
+		wd, _ := GetHomeDir()
 
 		g.AfterEach(func() {
 			os.Remove(wd + "/Vaultfile")

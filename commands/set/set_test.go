@@ -12,7 +12,7 @@ func TestSet(t *testing.T) {
 	g := Goblin(t)
 
 	g.Describe("Set", func() {
-    wd, _ := vault.GetHomeDir()
+		wd, _ := vault.GetHomeDir()
 
 		g.Describe("#Run", func() {
 

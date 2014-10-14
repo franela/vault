@@ -1,6 +1,8 @@
 package get
 
 import (
+	"github.com/franela/vault/gpg"
+	"github.com/franela/vault/ui"
 	"github.com/mitchellh/cli"
 )
 
@@ -19,7 +21,15 @@ func (setCommand) Help() string {
 }
 
 func (setCommand) Run(args []string) int {
-	return 1
+	file := args[0]
+
+	if text, err := gpg.Decrypt(file); err != nil {
+		ui.Printf("Error decrypting file %s %s", file, err)
+		return 1
+	} else {
+		ui.Printf("%s", text)
+		return 0
+	}
 }
 
 func (setCommand) Synopsis() string {

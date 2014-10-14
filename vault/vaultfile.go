@@ -11,10 +11,10 @@ type Vaultfile struct {
 }
 
 func LoadVaultfile() (*Vaultfile, error) {
-  wd, err := GetHomeDir()
-  if err != nil {
-    return nil, err
-  }
+	wd, err := GetHomeDir()
+	if err != nil {
+		return nil, err
+	}
 
 	v := &Vaultfile{}
 	content, err := ioutil.ReadFile(wd + "/Vaultfile")
@@ -29,17 +29,17 @@ func LoadVaultfile() (*Vaultfile, error) {
 }
 
 func (v Vaultfile) Save() error {
-  wd, err := GetHomeDir()
-  if err != nil {
-    return err
-  }
+	wd, err := GetHomeDir()
+	if err != nil {
+		return err
+	}
 
 	js, err := json.Marshal(v)
 	if err != nil {
 		return err
 	}
 
-	err2 := ioutil.WriteFile(wd + "/Vaultfile", js, 0644)
+	err2 := ioutil.WriteFile(wd+"/Vaultfile", js, 0644)
 	if err2 != nil {
 		return err2
 	}
