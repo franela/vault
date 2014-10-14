@@ -2,5 +2,9 @@ test:
 	VAULTDIR=$(PWD) \
 	go test ./...
 
-.PHONY: test
+debug:
+	VAULTDIR=$(PWD) \
+	go test -v ./...
+
+.PHONY: test debug
 	
