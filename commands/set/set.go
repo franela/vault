@@ -2,6 +2,7 @@ package set
 
 import (
         "log"
+        "flag"
 	"github.com/mitchellh/cli"
         "github.com/franela/vault/gpg"
         "github.com/franela/vault/vault"
@@ -23,22 +24,45 @@ func (setCommand) Help() string {
 
 func (setCommand) Run(args []string) int {
 
-    path := args[0]
-    text := args[1]
+    vaultFile, err := vault.LoadVaultfile()
 
-    if vaultFile, err := vault.LoadVaultfile(); err != nil {
+    if err != nil {
         log.Print(err)
         return 1
+    }
+
+    cmdFlags := flag.NewFlagSet("set", flag.ContinueOnError)
+
+    var fileName string
+
+    cmdFlags.StringVar(&fileName, "f", "", "specify the file to encrypt")
+
+    if err := cmdFlags.Parse(args); err != nil {
+        return 1
+    }
+
+    args = cmdFlags.Args()
+
+    if len(fileName) > 0 {
+        path := args[0]
+        err := gpg.EncryptFile(path, fileName, vaultFile.Recipients)
+        if err != nil {
+            log.Print(err)
+            return 1
+        }
     } else {
+        text := args[0]
+        path := args[1]
+
         err := gpg.Encrypt(path, text, vaultFile.Recipients)
 
         if err != nil {
             log.Print(err)
             return 1
         }
-
-        return 0
     }
+
+    return 0
 }
 
 func (setCommand) Synopsis() string {

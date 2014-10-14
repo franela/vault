@@ -1,6 +1,6 @@
 test:
 	VAULTDIR=$(PWD) \
-	go test ./...
+	go test -v ./...
 
 .PHONY: test
 	
