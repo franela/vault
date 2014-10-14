@@ -12,8 +12,10 @@ import (
 func TestVaultfile(t *testing.T) {
 	g := Goblin(t)
 	g.Describe("Vaultfile", func() {
+    wd, _ := GetHomeDir()
+
 		g.AfterEach(func() {
-			os.Remove("Vaultfile")
+			os.Remove(wd + "/Vaultfile")
 		})
 
 		g.Describe("#Save", func() {
@@ -22,7 +24,7 @@ func TestVaultfile(t *testing.T) {
 				v.Recipients = []string{"a@a.com"}
 				v.Save()
 
-				content, err := ioutil.ReadFile("Vaultfile")
+				content, err := ioutil.ReadFile(wd + "/Vaultfile")
 				g.Assert(err == nil).IsTrue()
 
 				v2 := &Vaultfile{}

@@ -8,31 +8,29 @@ import (
 	"testing"
 )
 
-var (
-	cwd = os.Getenv("VAULTDIR")
-)
-
 func TestSet(t *testing.T) {
 	g := Goblin(t)
 
 	g.Describe("Set", func() {
+    wd, _ := vault.GetHomeDir()
+
 		g.Describe("#Run", func() {
 
 			g.AfterEach(func() {
-				os.Remove(cwd + "/tmp/set_test")
-				os.Remove("Vaultfile")
+				os.Remove(wd + "/tmp/set_test")
+				os.Remove(wd + "/Vaultfile")
 			})
 
 			g.It("Should create an encrypted file given a text", func() {
 				v := &vault.Vaultfile{}
 				v.Recipients = []string{"bob@example.com"}
 				v.Save()
-				os.Setenv("GNUPGHOME", cwd+"/testdata/bob")
+				os.Setenv("GNUPGHOME", wd+"/testdata/bob")
 				c, _ := Factory()
-				c.Run([]string{"This is a test", cwd + "/tmp/set_test"})
-				_, err := os.Stat(cwd + "/tmp/set_test")
+				c.Run([]string{"This is a test", wd + "/tmp/set_test"})
+				_, err := os.Stat(wd + "/tmp/set_test")
 				g.Assert(err == nil).IsTrue()
-				out, err := gpg.Decrypt(cwd + "/tmp/set_test")
+				out, err := gpg.Decrypt(wd + "/tmp/set_test")
 				g.Assert(err == nil).IsTrue()
 				g.Assert(out).Equal("This is a test")
 			})
@@ -40,14 +38,14 @@ func TestSet(t *testing.T) {
 				v := &vault.Vaultfile{}
 				v.Recipients = []string{"bob@example.com"}
 				v.Save()
-				os.Setenv("GNUPGHOME", cwd+"/testdata/bob")
+				os.Setenv("GNUPGHOME", wd+"/testdata/bob")
 				c, _ := Factory()
 
-				c.Run([]string{"-f", cwd + "/testdata/set_test", cwd + "/tmp/set_test"})
+				c.Run([]string{"-f", wd + "/testdata/set_test", wd + "/tmp/set_test"})
 
-				_, err := os.Stat(cwd + "/tmp/set_test")
+				_, err := os.Stat(wd + "/tmp/set_test")
 				g.Assert(err == nil).IsTrue()
-				out, err := gpg.Decrypt(cwd + "/tmp/set_test")
+				out, err := gpg.Decrypt(wd + "/tmp/set_test")
 				g.Assert(err == nil).IsTrue()
 				g.Assert(out).Equal("This is a test")
 			})
