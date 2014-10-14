@@ -51,6 +51,12 @@ func TestSet(t *testing.T) {
 				g.Assert(err == nil).IsTrue()
 				g.Assert(out).Equal("This is a test")
 			})
+
+			g.It("Should encrypt only for recipients in the Vaultfile")
+			g.It("Should fail if Vaultfile recipients is empty")
+			g.It("Should fail if file to encrypt doesn't exist or cannot be accesed")
+			g.It("Should fail if encrypted file cannot be saved")
+			g.It("Should fail if encrypted file path starts with '..' or '/'")
 		})
 	})
 }

@@ -7,6 +7,7 @@ import (
 	"github.com/mitchellh/cli"
 
 	inita "github.com/franela/vault/commands/init"
+	set "github.com/franela/vault/commands/set"
 )
 
 func main() {
@@ -14,11 +15,11 @@ func main() {
 	c.Args = os.Args[1:]
 	c.Commands = map[string]cli.CommandFactory{
 		"init": inita.Factory,
+		"set":  set.Factory,
 		/*
-		   "set": addCommandFactory,
-		   "get": showCommandFactory,
-		   "del": delCommandFactory,
-		   "list": lsCommandFactory
+			"get": showCommandFactory,
+			   "del": delCommandFactory,
+			   "list": lsCommandFactory
 		*/
 	}
 
