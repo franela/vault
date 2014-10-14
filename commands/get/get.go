@@ -1,37 +1,56 @@
 package get
 
 import (
+	"flag"
 	"github.com/franela/vault/gpg"
 	"github.com/franela/vault/ui"
 	"github.com/mitchellh/cli"
 )
 
-const setHelpText = `
+const getHelpText = `
 `
 
 func Factory() (cli.Command, error) {
-	return setCommand{}, nil
+	return getCommand{}, nil
 }
 
-type setCommand struct {
+type getCommand struct {
 }
 
-func (setCommand) Help() string {
-	return setHelpText
+func (getCommand) Help() string {
+	return getHelpText
 }
 
-func (setCommand) Run(args []string) int {
+func (getCommand) Run(args []string) int {
+	cmdFlags := flag.NewFlagSet("get", flag.ContinueOnError)
+
+	var outputFile string
+
+	cmdFlags.StringVar(&outputFile, "o", "", "specify the output file to store decrypted text")
+
+	if err := cmdFlags.Parse(args); err != nil {
+		return 1
+	}
+
+	args = cmdFlags.Args()
 	file := args[0]
 
-	if text, err := gpg.Decrypt(file); err != nil {
-		ui.Printf("Error decrypting file %s %s", file, err)
-		return 1
+	if len(outputFile) > 0 {
+		if err := gpg.DecryptFile(outputFile, file); err != nil {
+			ui.Printf("Error decrypting file %s %s", file, err)
+			return 1
+		}
 	} else {
-		ui.Printf("%s", text)
-		return 0
+		if text, err := gpg.Decrypt(file); err != nil {
+			ui.Printf("Error decrypting file %s %s", file, err)
+			return 1
+		} else {
+			ui.Printf("%s", text)
+		}
 	}
+	return 0
 }
 
-func (setCommand) Synopsis() string {
+func (getCommand) Synopsis() string {
 	return ""
 }

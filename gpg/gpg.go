@@ -22,6 +22,21 @@ func Decrypt(filePath string) (string, error) {
 	return string(out), nil
 }
 
+func DecryptFile(outputFile, filePath string) error {
+
+	decryptArgs := []string{"--decrypt", "--armor", "--batch", "--yes", "--output", outputFile, filePath}
+
+	cmd := exec.Command("gpg", decryptArgs...)
+
+	_, err := cmd.Output()
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func Encrypt(filePath string, text string, recipients []string) error {
 
 	if err := os.MkdirAll(path.Dir(filePath), 0777); err != nil {
