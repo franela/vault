@@ -1,11 +1,11 @@
 package set
 
 import (
-        "log"
-        "flag"
+	"flag"
+	"github.com/franela/vault/gpg"
+	"github.com/franela/vault/vault"
 	"github.com/mitchellh/cli"
-        "github.com/franela/vault/gpg"
-        "github.com/franela/vault/vault"
+	"log"
 )
 
 const setHelpText = `
@@ -24,45 +24,45 @@ func (setCommand) Help() string {
 
 func (setCommand) Run(args []string) int {
 
-    vaultFile, err := vault.LoadVaultfile()
+	vaultFile, err := vault.LoadVaultfile()
 
-    if err != nil {
-        log.Print(err)
-        return 1
-    }
+	if err != nil {
+		log.Print(err)
+		return 1
+	}
 
-    cmdFlags := flag.NewFlagSet("set", flag.ContinueOnError)
+	cmdFlags := flag.NewFlagSet("set", flag.ContinueOnError)
 
-    var fileName string
+	var fileName string
 
-    cmdFlags.StringVar(&fileName, "f", "", "specify the file to encrypt")
+	cmdFlags.StringVar(&fileName, "f", "", "specify the file to encrypt")
 
-    if err := cmdFlags.Parse(args); err != nil {
-        return 1
-    }
+	if err := cmdFlags.Parse(args); err != nil {
+		return 1
+	}
 
-    args = cmdFlags.Args()
+	args = cmdFlags.Args()
 
-    if len(fileName) > 0 {
-        path := args[0]
-        err := gpg.EncryptFile(path, fileName, vaultFile.Recipients)
-        if err != nil {
-            log.Print(err)
-            return 1
-        }
-    } else {
-        text := args[0]
-        path := args[1]
+	if len(fileName) > 0 {
+		path := args[0]
+		err := gpg.EncryptFile(path, fileName, vaultFile.Recipients)
+		if err != nil {
+			log.Print(err)
+			return 1
+		}
+	} else {
+		text := args[0]
+		path := args[1]
 
-        err := gpg.Encrypt(path, text, vaultFile.Recipients)
+		err := gpg.Encrypt(path, text, vaultFile.Recipients)
 
-        if err != nil {
-            log.Print(err)
-            return 1
-        }
-    }
+		if err != nil {
+			log.Print(err)
+			return 1
+		}
+	}
 
-    return 0
+	return 0
 }
 
 func (setCommand) Synopsis() string {
