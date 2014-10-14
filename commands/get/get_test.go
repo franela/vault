@@ -52,6 +52,8 @@ func TestGet(t *testing.T) {
 				output, _ := ioutil.ReadFile(wd + "/tmp/get_test_output")
 				g.Assert(string(output)).Equal("This is a test")
 			})
+
+      g.It("Should show help when called without arguments")
 		})
 	})
 }

@@ -19,8 +19,10 @@ func main() {
 		"set":  set.Factory,
 		"get":  get.Factory,
 		/*
-		   "del": delCommandFactory,
-		   "list": lsCommandFactory
+      TODO:
+        recipients
+        add
+        remove
 		*/
 	}
 
