@@ -53,7 +53,7 @@ func TestGet(t *testing.T) {
 				g.Assert(string(output)).Equal("This is a test")
 			})
 
-      g.It("Should show help when called without arguments")
+			g.It("Should show help when called without arguments")
 		})
 	})
 }
