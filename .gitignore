@@ -24,3 +24,4 @@ _testmain.go
 *.prof
 
 tmp/
+testdata/bob/random_seed
