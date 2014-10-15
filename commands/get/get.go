@@ -4,7 +4,9 @@ import (
 	"flag"
 	"github.com/franela/vault/gpg"
 	"github.com/franela/vault/ui"
+	"github.com/franela/vault/vault"
 	"github.com/mitchellh/cli"
+	"path"
 )
 
 const getHelpText = `
@@ -36,12 +38,12 @@ func (getCommand) Run(args []string) int {
 	file := args[0]
 
 	if len(outputFile) > 0 {
-		if err := gpg.DecryptFile(outputFile, file); err != nil {
+		if err := gpg.DecryptFile(outputFile, path.Join(vault.GetHomeDir(), file)); err != nil {
 			ui.Printf("Error decrypting file %s %s", file, err)
 			return 1
 		}
 	} else {
-		if text, err := gpg.Decrypt(file); err != nil {
+		if text, err := gpg.Decrypt(path.Join(vault.GetHomeDir(), file)); err != nil {
 			ui.Printf("Error decrypting file %s %s", file, err)
 			return 1
 		} else {

@@ -4,7 +4,9 @@ import (
 	. "github.com/franela/goblin"
 	"github.com/franela/vault/gpg"
 	"github.com/franela/vault/vault"
+	"github.com/franela/vault/vault/testutils"
 	"os"
+	"path"
 	"testing"
 )
 
@@ -12,40 +14,47 @@ func TestSet(t *testing.T) {
 	g := Goblin(t)
 
 	g.Describe("Set", func() {
-		wd, _ := vault.GetHomeDir()
-
 		g.Describe("#Run", func() {
+			g.BeforeEach(func() {
+				vault.SetHomeDir(testutils.GetTemporaryHomeDir())
+			})
 
 			g.AfterEach(func() {
-				os.Remove(wd + "/tmp/set_test")
-				os.Remove(wd + "/Vaultfile")
+				testutils.RemoveTemporaryHomeDir(vault.UnsetHomeDir())
 			})
 
 			g.It("Should create an encrypted file given a text", func() {
+				testutils.SetTestGPGHome("bob")
+
 				v := &vault.Vaultfile{}
 				v.Recipients = []string{"bob@example.com"}
 				v.Save()
-				os.Setenv("GNUPGHOME", wd+"/testdata/bob")
+
 				c, _ := Factory()
-				c.Run([]string{"This is a test", wd + "/tmp/set_test"})
-				_, err := os.Stat(wd + "/tmp/set_test")
+				c.Run([]string{"This is a test", "set_test"})
+
+				_, err := os.Stat(path.Join(vault.GetHomeDir(), "set_test"))
 				g.Assert(err == nil).IsTrue()
-				out, err := gpg.Decrypt(wd + "/tmp/set_test")
+
+				out, err := gpg.Decrypt(path.Join(vault.GetHomeDir(), "set_test"))
 				g.Assert(err == nil).IsTrue()
 				g.Assert(out).Equal("This is a test")
 			})
 			g.It("Should create an encrypted file given another file", func() {
+				testutils.SetTestGPGHome("bob")
+
 				v := &vault.Vaultfile{}
 				v.Recipients = []string{"bob@example.com"}
 				v.Save()
-				os.Setenv("GNUPGHOME", wd+"/testdata/bob")
+
 				c, _ := Factory()
 
-				c.Run([]string{"-f", wd + "/testdata/set_test", wd + "/tmp/set_test"})
+				c.Run([]string{"-f", path.Join(testutils.GetProjectDir(), "testdata", "set_test"), "set_test"})
 
-				_, err := os.Stat(wd + "/tmp/set_test")
+				_, err := os.Stat(path.Join(vault.GetHomeDir(), "set_test"))
 				g.Assert(err == nil).IsTrue()
-				out, err := gpg.Decrypt(wd + "/tmp/set_test")
+
+				out, err := gpg.Decrypt(path.Join(vault.GetHomeDir(), "set_test"))
 				g.Assert(err == nil).IsTrue()
 				g.Assert(out).Equal("This is a test")
 			})

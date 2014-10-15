@@ -8,7 +8,6 @@ import (
 )
 
 func Decrypt(filePath string) (string, error) {
-
 	decryptArgs := []string{"--decrypt", "--armor", "--batch", "--yes", filePath}
 
 	cmd := exec.Command("gpg", decryptArgs...)
@@ -38,7 +37,6 @@ func DecryptFile(outputFile, filePath string) error {
 }
 
 func Encrypt(filePath string, text string, recipients []string) error {
-
 	if err := os.MkdirAll(path.Dir(filePath), 0777); err != nil {
 		return err
 	}
@@ -52,7 +50,7 @@ func Encrypt(filePath string, text string, recipients []string) error {
 
 	cmd := exec.Command("gpg", encryptArgs...)
 	cmd.Stdin = strings.NewReader(text)
-	_, err := cmd.CombinedOutput()
+	_, err := cmd.Output()
 
 	if err != nil {
 		return err

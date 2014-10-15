@@ -1,9 +1,9 @@
 test:
-	VAULTDIR=$(PWD) \
+	PROJECTDIR=$(PWD) \
 	go test ./...
 
 debug:
-	VAULTDIR=$(PWD) \
+	PROJECTDIR=$(PWD) \
 	go test -v ./...
 
 .PHONY: test debug

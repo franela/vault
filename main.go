@@ -6,9 +6,11 @@ import (
 
 	"github.com/mitchellh/cli"
 
+	add "github.com/franela/vault/commands/add"
 	get "github.com/franela/vault/commands/get"
 	inita "github.com/franela/vault/commands/init"
 	recipients "github.com/franela/vault/commands/recipients"
+	remove "github.com/franela/vault/commands/remove"
 	set "github.com/franela/vault/commands/set"
 )
 
@@ -20,10 +22,11 @@ func main() {
 		"set":        set.Factory,
 		"get":        get.Factory,
 		"recipients": recipients.Factory,
+		"add":        add.Factory,
+		"remove":     remove.Factory,
 		/*
-		   TODO:
-		     add
-		     remove
+				   TODO:
+		          repair
 		*/
 	}
 

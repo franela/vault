@@ -4,7 +4,7 @@ import (
 	. "github.com/franela/goblin"
 	"github.com/franela/vault/ui"
 	"github.com/franela/vault/vault"
-	"os"
+	"github.com/franela/vault/vault/testutils"
 	"strings"
 	"testing"
 )
@@ -14,14 +14,17 @@ func TestRecipients(t *testing.T) {
 
 	g.Describe("Recipients", func() {
 		g.Describe("#Run", func() {
-			wd, _ := vault.GetHomeDir()
-			ui.DEBUG = true
+			g.BeforeEach(func() {
+				vault.SetHomeDir(testutils.GetTemporaryHomeDir())
+				ui.DEBUG = true
+			})
+
+			g.AfterEach(func() {
+				testutils.RemoveTemporaryHomeDir(vault.UnsetHomeDir())
+				ui.DEBUG = false
+			})
 
 			g.It("Should output all the recipients in the Vaultfile", func() {
-				defer func() {
-					os.Remove(wd + "/Vaultfile")
-				}()
-
 				vault := vault.Vaultfile{}
 				vault.Recipients = []string{"bob@example.com", "alice@example.com"}
 				vault.Save()

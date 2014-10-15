@@ -21,10 +21,7 @@ func TestVault(t *testing.T) {
 
 				wd, _ := os.Getwd()
 
-				d, err := GetHomeDir()
-
-				g.Assert(err == nil).IsTrue()
-				g.Assert(d).Equal(wd)
+				g.Assert(GetHomeDir()).Equal(wd)
 			})
 
 			g.It("Should return VAULTDIR environment variable if it is defined", func() {
@@ -33,10 +30,7 @@ func TestVault(t *testing.T) {
 				}()
 				os.Setenv("VAULTDIR", "/tmp")
 
-				d, err := GetHomeDir()
-
-				g.Assert(err == nil).IsTrue()
-				g.Assert(d).Equal("/tmp")
+				g.Assert(GetHomeDir()).Equal("/tmp")
 			})
 		})
 	})

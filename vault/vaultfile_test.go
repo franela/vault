@@ -3,19 +3,22 @@ package vault
 import (
 	"encoding/json"
 	"io/ioutil"
-	"os"
+	"path"
 	"testing"
 
 	. "github.com/franela/goblin"
+	"github.com/franela/vault/vault/testutils"
 )
 
 func TestVaultfile(t *testing.T) {
 	g := Goblin(t)
 	g.Describe("Vaultfile", func() {
-		wd, _ := GetHomeDir()
+		g.BeforeEach(func() {
+			SetHomeDir(testutils.GetTemporaryHomeDir())
+		})
 
 		g.AfterEach(func() {
-			os.Remove(wd + "/Vaultfile")
+			testutils.RemoveTemporaryHomeDir(UnsetHomeDir())
 		})
 
 		g.Describe("#Save", func() {
@@ -24,7 +27,7 @@ func TestVaultfile(t *testing.T) {
 				v.Recipients = []string{"a@a.com"}
 				v.Save()
 
-				content, err := ioutil.ReadFile(wd + "/Vaultfile")
+				content, err := ioutil.ReadFile(path.Join(GetHomeDir(), "Vaultfile"))
 				g.Assert(err == nil).IsTrue()
 
 				v2 := &Vaultfile{}
@@ -37,8 +40,12 @@ func TestVaultfile(t *testing.T) {
 	})
 
 	g.Describe("LoadVaultfile", func() {
+		g.BeforeEach(func() {
+			SetHomeDir(testutils.GetTemporaryHomeDir())
+		})
+
 		g.AfterEach(func() {
-			os.Remove("Vaultfile")
+			testutils.RemoveTemporaryHomeDir(UnsetHomeDir())
 		})
 
 		g.It("Should load existing Vaultfile", func() {
