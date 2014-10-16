@@ -5,6 +5,7 @@ import (
 	"os/exec"
 	"path"
 	"strings"
+  "code.google.com/p/go.crypto/openpgp"
 )
 
 func Decrypt(filePath string) (string, error) {
@@ -81,3 +82,24 @@ func EncryptFile(filePath string, sourceFile string, recipients []string) error 
 	}
 	return nil
 }
+
+func GetRecipientsFromEncryptedFile(filePath string) []string {
+    // Open the private key file
+
+    
+
+    keyringFileBuffer2, err := os.Open(filePath)
+    if err != nil {
+        return err
+    }
+    defer keyringFileBuffer2.Close()
+
+    openpgp.ReadKeyRing()
+
+
+  return []string {}
+}
+
+
+
+

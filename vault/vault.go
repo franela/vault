@@ -34,3 +34,11 @@ func GetHomeDir() string {
 	}
 	return workingDir
 }
+
+
+func GetGPGHomeDir() string {
+  return os.Getenv("")
+
+}
+
+
