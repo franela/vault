@@ -1,11 +1,11 @@
 package gpg
 
 import (
+	"io"
 	"os"
 	"os/exec"
 	"path"
 	"strings"
-  "code.google.com/p/go.crypto/openpgp"
 )
 
 func Decrypt(filePath string) (string, error) {
@@ -83,23 +83,43 @@ func EncryptFile(filePath string, sourceFile string, recipients []string) error 
 	return nil
 }
 
-func GetRecipientsFromEncryptedFile(filePath string) []string {
-    // Open the private key file
+func ReEncryptFile(src, dst string, recipients []string) error {
+	decryptArgs := []string{"--decrypt", "--armor", "--batch", "--yes", src}
+	encryptArgs := []string{"--encrypt", "--armor", "--batch", "--yes", "--output", dst}
 
-    
+	for _, recipient := range recipients {
+		encryptArgs = append(encryptArgs, "--recipient")
+		encryptArgs = append(encryptArgs, recipient)
+	}
 
-    keyringFileBuffer2, err := os.Open(filePath)
-    if err != nil {
-        return err
-    }
-    defer keyringFileBuffer2.Close()
+	decryptCmd := exec.Command("gpg", decryptArgs...)
+	encryptCmd := exec.Command("gpg", encryptArgs...)
 
-    openpgp.ReadKeyRing()
+	r, w := io.Pipe()
+	decryptCmd.Stdout = w
+	encryptCmd.Stdin = r
+	encryptCmd.Stderr = os.Stderr
+	encryptCmd.Stdout = os.Stderr
 
+	err1 := decryptCmd.Start()
+	err2 := encryptCmd.Start()
 
-  return []string {}
+	if err1 != nil {
+		return err1
+	}
+	if err2 != nil {
+		return err1
+	}
+
+	err1 = decryptCmd.Wait()
+	w.Close()
+	err2 = encryptCmd.Wait()
+
+	if err1 != nil {
+		return err1
+	}
+	if err2 != nil {
+		return err1
+	}
+	return nil
 }
-
-
-
-

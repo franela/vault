@@ -1,8 +1,15 @@
 package repair
 
 import (
+	"fmt"
+	"github.com/franela/vault/gpg"
+	"github.com/franela/vault/ui"
+	"github.com/franela/vault/vault"
 	"github.com/mitchellh/cli"
-  )
+	"os"
+	"path"
+	"path/filepath"
+)
 
 const repairHelpText = `
 `
@@ -19,44 +26,32 @@ func (repairCommand) Help() string {
 }
 
 func (repairCommand) Run(args []string) int {
+	vaultFile, err := vault.LoadVaultfile()
 
-//	vaultFile, err := vault.LoadVaultfile()
-//
-//	if err != nil {
-//		ui.Printf("%s", err)
-//		return 1
-//	}
-//
-//	cmdFlags := flag.NewFlagSet("repair", flag.ContinueOnError)
-//
-//	var fileName string
-//
-//	cmdFlags.StringVar(&fileName, "f", "", "specify the file to encrypt")
-//
-//	if err := cmdFlags.Parse(args); err != nil {
-//		return 1
-//	}
-//
-//	args = cmdFlags.Args()
-//
-//	if len(fileName) > 0 {
-//		vaultPath := args[0]
-//		err := gpg.EncryptFile(path.Join(vault.GetHomeDir(), vaultPath), fileName, vaultFile.Recipients)
-//		if err != nil {
-//			ui.Printf("%s", err)
-//			return 1
-//		}
-//	} else {
-//		text := args[0]
-//		vaultPath := args[1]
-//
-//		err := gpg.Encrypt(path.Join(vault.GetHomeDir(), vaultPath), text, vaultFile.Recipients)
-//
-//		if err != nil {
-//			ui.Printf("%s", err)
-//			return 1
-//		}
-//	}
+	if err != nil {
+		ui.Printf("%s", err)
+		return 1
+	}
+
+	if err := filepath.Walk(vault.GetHomeDir(), func(filepath string, info os.FileInfo, err error) error {
+		if path.Base(filepath) == "Vaultfile" {
+			return nil
+		}
+		if err != nil {
+			return err
+		}
+		if info.IsDir() {
+			return nil
+		}
+		fmt.Println(filepath)
+		if err := gpg.ReEncryptFile(filepath, filepath, vaultFile.Recipients); err != nil {
+			return err
+		}
+		return nil
+	}); err != nil {
+		ui.Printf("%s", err)
+		return 1
+	}
 
 	return 0
 }

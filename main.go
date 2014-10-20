@@ -12,6 +12,7 @@ import (
 	recipients "github.com/franela/vault/commands/recipients"
 	remove "github.com/franela/vault/commands/remove"
 	set "github.com/franela/vault/commands/set"
+	repair "github.com/franela/vault/commands/repair"
 )
 
 func main() {
@@ -24,10 +25,7 @@ func main() {
 		"recipients": recipients.Factory,
 		"add":        add.Factory,
 		"remove":     remove.Factory,
-		/*
-				   TODO:
-		          repair
-		*/
+    "repair":     repair.Factory,
 	}
 
 	exitStatus, err := c.Run()
