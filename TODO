@@ -1,0 +1,26 @@
+- Complete all descriptions of all commands
+- Add -v to show detailed information of what is going on
+- Always encrypt files with .asc extension and only reencrypt those
+- Auto-repair after "add" and "remove"
+
+
+
+package main
+
+
+
+import "log"
+import "os"
+import "syscall"
+import "time"
+
+func main() {
+    f, _ := os.OpenFile("/tmp/lala", os.O_WRONLY | os.O_CREATE | os.O_SYNC, 0644)
+
+        syscall.Dup2(int(f.Fd()), 2)
+
+          log.Println("saasasassa")
+                                                                                                                                                                                                                                                        
+            f.Close()
+              time.Sleep(10000 * time.Minute)
+}
