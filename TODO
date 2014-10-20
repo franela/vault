@@ -1,3 +1,4 @@
 - Complete all descriptions of all commands
 - Always encrypt files with .asc extension and only reencrypt those
 - Auto-repair after "add" and "remove"
+- Add logs where is necessary
