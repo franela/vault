@@ -1,7 +1,6 @@
 package repair
 
 import (
-	"fmt"
 	"github.com/franela/vault/gpg"
 	"github.com/franela/vault/ui"
 	"github.com/franela/vault/vault"
@@ -34,16 +33,15 @@ func (repairCommand) Run(args []string) int {
 	}
 
 	if err := filepath.Walk(vault.GetHomeDir(), func(filepath string, info os.FileInfo, err error) error {
-		if path.Base(filepath) == "Vaultfile" {
-			return nil
-		}
 		if err != nil {
 			return err
 		}
 		if info.IsDir() {
 			return nil
 		}
-		fmt.Println(filepath)
+		if path.Ext(filepath) != ".asc" {
+			return nil
+		}
 		if err := gpg.ReEncryptFile(filepath, filepath, vaultFile.Recipients); err != nil {
 			return err
 		}

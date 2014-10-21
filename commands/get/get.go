@@ -7,6 +7,7 @@ import (
 	"github.com/franela/vault/vault"
 	"github.com/mitchellh/cli"
 	"path"
+	"path/filepath"
 )
 
 const getHelpText = `
@@ -35,7 +36,11 @@ func (getCommand) Run(args []string) int {
 	}
 
 	args = cmdFlags.Args()
+
 	file := args[0]
+	if filepath.Ext(file) != ".asc" {
+		file = file + ".asc"
+	}
 
 	if len(outputFile) > 0 {
 		if err := gpg.DecryptFile(outputFile, path.Join(vault.GetHomeDir(), file)); err != nil {

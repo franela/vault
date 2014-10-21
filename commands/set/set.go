@@ -7,6 +7,7 @@ import (
 	"github.com/franela/vault/vault"
 	"github.com/mitchellh/cli"
 	"path"
+	"path/filepath"
 )
 
 const setHelpText = `
@@ -46,6 +47,9 @@ func (setCommand) Run(args []string) int {
 
 	if len(fileName) > 0 {
 		vaultPath := args[0]
+		if filepath.Ext(vaultPath) != ".asc" {
+			vaultPath = vaultPath + ".asc"
+		}
 		err := gpg.EncryptFile(path.Join(vault.GetHomeDir(), vaultPath), fileName, vaultFile.Recipients)
 		if err != nil {
 			ui.Printf("%s", err)
@@ -54,6 +58,9 @@ func (setCommand) Run(args []string) int {
 	} else {
 		text := args[0]
 		vaultPath := args[1]
+		if filepath.Ext(vaultPath) != ".asc" {
+			vaultPath = vaultPath + ".asc"
+		}
 
 		err := gpg.Encrypt(path.Join(vault.GetHomeDir(), vaultPath), text, vaultFile.Recipients)
 

@@ -6,6 +6,7 @@ import (
 	"github.com/franela/vault/gpg"
 	"github.com/franela/vault/vault"
 	"github.com/franela/vault/vault/testutils"
+	"io/ioutil"
 	"path"
 	"testing"
 )
@@ -30,10 +31,10 @@ func TestRepair(t *testing.T) {
 				v.Recipients = []string{"bob@example.com"}
 				v.Save()
 
-				encryptedFilePath := path.Join(vault.GetHomeDir(), "repair_test")
+				encryptedFilePath := path.Join(vault.GetHomeDir(), "repair_test.asc")
 				gpg.Encrypt(encryptedFilePath, "This is a test", v.Recipients)
 
-				encryptedFilePath2 := path.Join(vault.GetHomeDir(), "foo", "repair_test2")
+				encryptedFilePath2 := path.Join(vault.GetHomeDir(), "foo", "repair_test2.asc")
 				gpg.Encrypt(encryptedFilePath2, "This is a test", v.Recipients)
 
 				v.Recipients = append(v.Recipients, "alice@example.com")
@@ -58,6 +59,26 @@ func TestRepair(t *testing.T) {
 				testutils.SetTestGPGHome("alice")
 				code = getcmd.Run([]string{path.Join("foo", "repair_test2")})
 				g.Assert(code).Equal(0)
+			})
+
+			g.It("Should ignore files that don't have .asc extension", func() {
+				testutils.SetTestGPGHome("bob")
+
+				v := &vault.Vaultfile{}
+				v.Recipients = []string{"bob@example.com"}
+				v.Save()
+
+				notEncryptedFile := path.Join(vault.GetHomeDir(), "repair_test")
+				ioutil.WriteFile(notEncryptedFile, []byte("NOT ENCRYPTED"), 0600)
+
+				v.Recipients = append(v.Recipients, "alice@example.com")
+				v.Save()
+				c, _ := Factory()
+				c.Run([]string{})
+
+				fileContent, _ := ioutil.ReadFile(notEncryptedFile)
+
+				g.Assert(string(fileContent)).Equal("NOT ENCRYPTED")
 			})
 		})
 	})
