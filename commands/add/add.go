@@ -1,6 +1,7 @@
 package add
 
 import (
+	"github.com/franela/vault/commands/repair"
 	"github.com/franela/vault/ui"
 	"github.com/franela/vault/vault"
 	"github.com/mitchellh/cli"
@@ -10,17 +11,24 @@ const addHelpText = `
 `
 
 func Factory() (cli.Command, error) {
-	return addCommand{}, nil
+	repairCmd, err := repair.Factory()
+
+	if err != nil {
+		panic(err)
+	}
+
+	return addCommand{Repair: repairCmd}, nil
 }
 
 type addCommand struct {
+	Repair cli.Command
 }
 
 func (addCommand) Help() string {
 	return addHelpText
 }
 
-func (addCommand) Run(args []string) int {
+func (self addCommand) Run(args []string) int {
 	if vaultFile, err := vault.LoadVaultfile(); err != nil {
 		ui.Printf("Error opening Vaultfile: %s", err)
 		return 1
@@ -33,7 +41,7 @@ func (addCommand) Run(args []string) int {
 			return 1
 		}
 
-		return 0
+		return self.Repair.Run([]string{})
 	}
 }
 

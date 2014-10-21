@@ -15,13 +15,14 @@ func Factory() (cli.Command, error) {
 }
 
 type removeCommand struct {
+	Repair cli.Command
 }
 
 func (removeCommand) Help() string {
 	return removeHelpText
 }
 
-func (removeCommand) Run(args []string) int {
+func (self removeCommand) Run(args []string) int {
 	if vaultFile, err := vault.LoadVaultfile(); err != nil {
 		ui.Printf("Error opening Vaultfile: %s", err)
 		return 1
@@ -51,7 +52,7 @@ func (removeCommand) Run(args []string) int {
 			return 1
 		}
 
-		return 0
+		return self.Repair.Run([]string{})
 	}
 }
 

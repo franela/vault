@@ -5,6 +5,7 @@ import (
 	"github.com/franela/vault/ui"
 	"github.com/franela/vault/vault"
 	"github.com/mitchellh/cli"
+	"log"
 	"os"
 	"path"
 	"path/filepath"
@@ -42,6 +43,7 @@ func (repairCommand) Run(args []string) int {
 		if path.Ext(filepath) != ".asc" {
 			return nil
 		}
+		log.Printf("Re-encrypting %s\n", filepath)
 		if err := gpg.ReEncryptFile(filepath, filepath, vaultFile.Recipients); err != nil {
 			return err
 		}

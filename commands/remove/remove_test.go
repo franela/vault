@@ -4,6 +4,7 @@ import (
 	. "github.com/franela/goblin"
 	"github.com/franela/vault/vault"
 	"github.com/franela/vault/vault/testutils"
+	"github.com/mitchellh/cli"
 	"testing"
 )
 
@@ -30,10 +31,15 @@ func TestRemove(t *testing.T) {
 
 				c, _ := Factory()
 
-				c.Run([]string{"alice@example.com"})
+				repairCommand := cli.MockCommand{}
+				removeCmd, _ := c.(removeCommand)
+				removeCmd.Repair = &repairCommand
+
+				removeCmd.Run([]string{"alice@example.com"})
 
 				newVaultfile, _ := vault.LoadVaultfile()
 				g.Assert(newVaultfile.Recipients).Equal([]string{"bob@example.com"})
+				g.Assert(repairCommand.RunCalled).IsTrue()
 			})
 		})
 	})

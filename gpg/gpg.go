@@ -1,7 +1,9 @@
 package gpg
 
 import (
+	"bufio"
 	"io"
+	"log"
 	"os"
 	"os/exec"
 	"path"
@@ -9,10 +11,11 @@ import (
 )
 
 func Decrypt(filePath string) (string, error) {
-	decryptArgs := []string{"--decrypt", "--armor", "--batch", "--yes", filePath}
+	decryptArgs := []string{"--homedir", os.Getenv("GNUPGHOME"), "--decrypt", "--armor", "--batch", "--yes", filePath}
 
+	log.Printf("Running: gpg %s\n", strings.Join(decryptArgs, " "))
 	cmd := exec.Command("gpg", decryptArgs...)
-
+	cmd.Stderr = os.Stderr
 	out, err := cmd.Output()
 
 	if err != nil {
@@ -24,9 +27,11 @@ func Decrypt(filePath string) (string, error) {
 
 func DecryptFile(outputFile, filePath string) error {
 
-	decryptArgs := []string{"--decrypt", "--armor", "--batch", "--yes", "--output", outputFile, filePath}
+	decryptArgs := []string{"--homedir", os.Getenv("GNUPGHOME"), "--decrypt", "--armor", "--batch", "--yes", "--output", outputFile, filePath}
 
+	log.Printf("Running: gpg %s\n", strings.Join(decryptArgs, " "))
 	cmd := exec.Command("gpg", decryptArgs...)
+	cmd.Stderr = os.Stderr
 
 	_, err := cmd.Output()
 
@@ -42,14 +47,16 @@ func Encrypt(filePath string, text string, recipients []string) error {
 		return err
 	}
 
-	encryptArgs := []string{"--encrypt", "--armor", "--batch", "--yes", "--output", filePath}
+	encryptArgs := []string{"--homedir", os.Getenv("GNUPGHOME"), "--encrypt", "--armor", "--batch", "--yes", "--output", filePath}
 
 	for _, recipient := range recipients {
 		encryptArgs = append(encryptArgs, "--recipient")
 		encryptArgs = append(encryptArgs, recipient)
 	}
 
+	log.Printf("Running: gpg %s\n", strings.Join(encryptArgs, " "))
 	cmd := exec.Command("gpg", encryptArgs...)
+	cmd.Stderr = os.Stderr
 	cmd.Stdin = strings.NewReader(text)
 	_, err := cmd.Output()
 
@@ -65,7 +72,7 @@ func EncryptFile(filePath string, sourceFile string, recipients []string) error 
 		return err
 	}
 
-	encryptArgs := []string{"--encrypt", "--armor", "--batch", "--yes", "--output", filePath}
+	encryptArgs := []string{"--homedir", os.Getenv("GNUPGHOME"), "--encrypt", "--armor", "--batch", "--yes", "--output", filePath}
 
 	for _, recipient := range recipients {
 		encryptArgs = append(encryptArgs, "--recipient")
@@ -74,8 +81,10 @@ func EncryptFile(filePath string, sourceFile string, recipients []string) error 
 
 	encryptArgs = append(encryptArgs, sourceFile)
 
+	log.Printf("Running: gpg %s\n", strings.Join(encryptArgs, " "))
 	cmd := exec.Command("gpg", encryptArgs...)
-	_, err := cmd.CombinedOutput()
+	cmd.Stderr = os.Stderr
+	_, err := cmd.Output()
 
 	if err != nil {
 		return err
@@ -84,8 +93,8 @@ func EncryptFile(filePath string, sourceFile string, recipients []string) error 
 }
 
 func ReEncryptFile(src, dst string, recipients []string) error {
-	decryptArgs := []string{"--decrypt", "--armor", "--batch", "--yes", src}
-	encryptArgs := []string{"--encrypt", "--armor", "--batch", "--yes", "--output", dst}
+	decryptArgs := []string{"--homedir", os.Getenv("GNUPGHOME"), "--decrypt", "--armor", "--batch", "--yes", src}
+	encryptArgs := []string{"--homedir", os.Getenv("GNUPGHOME"), "--encrypt", "--armor", "--batch", "--yes", "--output", dst}
 
 	for _, recipient := range recipients {
 		encryptArgs = append(encryptArgs, "--recipient")
@@ -95,31 +104,35 @@ func ReEncryptFile(src, dst string, recipients []string) error {
 	decryptCmd := exec.Command("gpg", decryptArgs...)
 	encryptCmd := exec.Command("gpg", encryptArgs...)
 
+	srcFile, fileErr := os.Open(src)
+	if fileErr != nil {
+		return fileErr
+	}
+
+	stat, statErr := srcFile.Stat()
+	if statErr != nil {
+		return statErr
+	}
+
 	r, w := io.Pipe()
-	decryptCmd.Stdout = w
-	encryptCmd.Stdin = r
+	bufferedStdout := bufio.NewWriterSize(w, int(stat.Size()))
+	decryptCmd.Stdout = bufferedStdout
+	decryptCmd.Stderr = os.Stderr
+
 	encryptCmd.Stderr = os.Stderr
-	encryptCmd.Stdout = os.Stderr
+	encryptCmd.Stdin = r
 
-	err1 := decryptCmd.Start()
-	err2 := encryptCmd.Start()
-
+	log.Printf("Running: gpg %s | gpg %s\n", strings.Join(decryptArgs, " "), strings.Join(encryptArgs, " "))
+	err1 := decryptCmd.Run()
 	if err1 != nil {
 		return err1
 	}
-	if err2 != nil {
-		return err1
-	}
-
-	err1 = decryptCmd.Wait()
 	w.Close()
-	err2 = encryptCmd.Wait()
 
-	if err1 != nil {
-		return err1
-	}
+	err2 := encryptCmd.Run()
 	if err2 != nil {
-		return err1
+		return err2
 	}
+
 	return nil
 }
