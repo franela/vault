@@ -33,7 +33,20 @@ func TestGet(t *testing.T) {
 				v.Recipients = []string{"bob@example.com"}
 				v.Save()
 
-				gpg.Encrypt(path.Join(vault.GetHomeDir(), "get_test"), "This is a test", v.Recipients)
+				gpg.Encrypt(path.Join(vault.GetHomeDir(), "get_test.asc"), "This is a test", v.Recipients)
+
+				c, _ := Factory()
+				c.Run([]string{"get_test.asc"})
+
+				g.Assert(ui.GetOutput()).Equal("This is a test")
+			})
+
+			g.It("Should add .asc extension if not specified", func() {
+				v := vault.Vaultfile{}
+				v.Recipients = []string{"bob@example.com"}
+				v.Save()
+
+				gpg.Encrypt(path.Join(vault.GetHomeDir(), "get_test.asc"), "This is a test", v.Recipients)
 
 				c, _ := Factory()
 				c.Run([]string{"get_test"})
@@ -46,7 +59,7 @@ func TestGet(t *testing.T) {
 				v.Recipients = []string{"bob@example.com"}
 				v.Save()
 
-				gpg.Encrypt(path.Join(vault.GetHomeDir(), "get_test"), "This is a test", v.Recipients)
+				gpg.Encrypt(path.Join(vault.GetHomeDir(), "get_test.asc"), "This is a test", v.Recipients)
 
 				c, _ := Factory()
 				c.Run([]string{"-o", path.Join(vault.GetHomeDir(), "get_test_output"), "get_test"})

@@ -31,12 +31,29 @@ func TestSet(t *testing.T) {
 				v.Save()
 
 				c, _ := Factory()
-				c.Run([]string{"This is a test", "set_test"})
+				c.Run([]string{"This is a test", "set_test.asc"})
 
-				_, err := os.Stat(path.Join(vault.GetHomeDir(), "set_test"))
+				_, err := os.Stat(path.Join(vault.GetHomeDir(), "set_test.asc"))
 				g.Assert(err == nil).IsTrue()
 
-				out, err := gpg.Decrypt(path.Join(vault.GetHomeDir(), "set_test"))
+				out, err := gpg.Decrypt(path.Join(vault.GetHomeDir(), "set_test.asc"))
+				g.Assert(err == nil).IsTrue()
+				g.Assert(out).Equal("This is a test")
+			})
+			g.It("Should add .asc extension if not specified", func() {
+				testutils.SetTestGPGHome("bob")
+
+				v := &vault.Vaultfile{}
+				v.Recipients = []string{"bob@example.com"}
+				v.Save()
+
+				c, _ := Factory()
+				c.Run([]string{"This is a test", "set_test"})
+
+				_, err := os.Stat(path.Join(vault.GetHomeDir(), "set_test.asc"))
+				g.Assert(err == nil).IsTrue()
+
+				out, err := gpg.Decrypt(path.Join(vault.GetHomeDir(), "set_test.asc"))
 				g.Assert(err == nil).IsTrue()
 				g.Assert(out).Equal("This is a test")
 			})
@@ -51,10 +68,10 @@ func TestSet(t *testing.T) {
 
 				c.Run([]string{"-f", path.Join(testutils.GetProjectDir(), "testdata", "set_test"), "set_test"})
 
-				_, err := os.Stat(path.Join(vault.GetHomeDir(), "set_test"))
+				_, err := os.Stat(path.Join(vault.GetHomeDir(), "set_test.asc"))
 				g.Assert(err == nil).IsTrue()
 
-				out, err := gpg.Decrypt(path.Join(vault.GetHomeDir(), "set_test"))
+				out, err := gpg.Decrypt(path.Join(vault.GetHomeDir(), "set_test.asc"))
 				g.Assert(err == nil).IsTrue()
 				g.Assert(out).Equal("This is a test")
 			})
