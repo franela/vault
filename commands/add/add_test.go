@@ -34,7 +34,19 @@ func TestAdd(t *testing.T) {
 
 				g.Assert(v.Recipients).Equal(loadedVault.Recipients)
 			})
-			g.It("Should allow to add multiple recipients")
+			g.It("Should allow to add multiple recipients", func() {
+				v := vault.Vaultfile{}
+				v.Recipients = []string{"bob@example.com"}
+				v.Save()
+
+				c, _ := Factory()
+
+				c.Run([]string{"alice@example.com", "third@example.com"})
+
+				newVaultfile, _ := vault.LoadVaultfile()
+				g.Assert(newVaultfile.Recipients).Equal([]string{"bob@example.com", "alice@example.com", "third@example.com"})
+
+			})
 
 			g.It("Should add new recipients", func() {
 				v := vault.Vaultfile{}

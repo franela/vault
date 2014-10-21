@@ -34,16 +34,16 @@ func (self addCommand) Run(args []string) int {
 		ui.Printf("Error opening Vaultfile: %s", err)
 		return 1
 	} else {
-		recipient := args[0]
-
-		if !strings.Contains(recipient, strings.Join(vaultFile.Recipients, " ")) {
-			vaultFile.Recipients = append(vaultFile.Recipients, recipient)
-			if err := vaultFile.Save(); err != nil {
-				ui.Printf("Error saving Vaultfile: %s", err)
-				return 1
+		for _, recipient := range args {
+			if !strings.Contains(recipient, strings.Join(vaultFile.Recipients, " ")) {
+				vaultFile.Recipients = append(vaultFile.Recipients, recipient)
 			}
-			return self.Repair.Run([]string{})
 		}
+		if err := vaultFile.Save(); err != nil {
+			ui.Printf("Error saving Vaultfile: %s", err)
+			return 1
+		}
+		return self.Repair.Run([]string{})
 
 		return 0
 	}
