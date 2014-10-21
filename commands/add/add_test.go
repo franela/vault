@@ -21,7 +21,19 @@ func TestAdd(t *testing.T) {
 		})
 
 		g.Describe("#Run", func() {
-			g.It("Should not fail if recipient already exist")
+			g.It("Should not fail if recipient already exist", func() {
+				v := vault.Vaultfile{}
+				v.Recipients = []string{"bob@example.com"}
+				v.Save()
+
+				c, _ := Factory()
+				code := c.Run([]string{"bob@example.com"})
+				g.Assert(code).Equal(0)
+
+				loadedVault, _ := vault.LoadVaultfile()
+
+				g.Assert(v.Recipients).Equal(loadedVault.Recipients)
+			})
 			g.It("Should allow to add multiple recipients")
 
 			g.It("Should add new recipients", func() {

@@ -5,6 +5,7 @@ import (
 	"github.com/franela/vault/ui"
 	"github.com/franela/vault/vault"
 	"github.com/mitchellh/cli"
+	"strings"
 )
 
 const addHelpText = `
@@ -35,13 +36,16 @@ func (self addCommand) Run(args []string) int {
 	} else {
 		recipient := args[0]
 
-		vaultFile.Recipients = append(vaultFile.Recipients, recipient)
-		if err := vaultFile.Save(); err != nil {
-			ui.Printf("Error saving Vaultfile: %s", err)
-			return 1
+		if !strings.Contains(recipient, strings.Join(vaultFile.Recipients, " ")) {
+			vaultFile.Recipients = append(vaultFile.Recipients, recipient)
+			if err := vaultFile.Save(); err != nil {
+				ui.Printf("Error saving Vaultfile: %s", err)
+				return 1
+			}
+			return self.Repair.Run([]string{})
 		}
 
-		return self.Repair.Run([]string{})
+		return 0
 	}
 }
 
