@@ -22,9 +22,18 @@ func RemoveTemporaryHomeDir(homedir string) {
 }
 
 func GetTemporaryHomeDir() string {
-	name, err := ioutil.TempDir(path.Join(os.Getenv("PROJECTDIR"), "tmp"), "vault")
+        tempPath := path.Join(os.Getenv("PROJECTDIR"), "tmp")
+
+        if _, err := os.Stat(tempPath); os.IsNotExist(err) {
+            if err := os.MkdirAll(tempPath, 0777); err != nil {
+                panic(err)
+            }
+        }
+
+	name, err := ioutil.TempDir(tempPath, "vault")
+
 	if err != nil {
-		panic(err)
+            panic(err)
 	}
 
 	return name

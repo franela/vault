@@ -2,6 +2,7 @@ package main
 
 import (
 	. "github.com/franela/goblin"
+	"github.com/franela/vault/vault/testutils"
 	"io/ioutil"
 	"log"
 	"os"
@@ -15,7 +16,7 @@ func TestMain(t *testing.T) {
 	g.Describe("Main", func() {
 		g.Describe("#Run", func() {
 			g.It("Should log to dev/null by default if no verbose flag is set ", func() {
-				dir, _ := ioutil.TempDir(path.Join(os.Getenv("PROJECTDIR"), "tmp"), "verbose")
+				dir := testutils.GetTemporaryHomeDir()
 				filePath := path.Join(dir, "stderr")
 				logFile, _ := os.OpenFile(filePath, os.O_WRONLY|os.O_CREATE|os.O_SYNC, 0644)
 				syscall.Dup2(int(logFile.Fd()), 2)
@@ -34,7 +35,7 @@ func TestMain(t *testing.T) {
 			})
 
 			g.It("Should log to stderr if verbose flag is set ", func() {
-				dir, _ := ioutil.TempDir(path.Join(os.Getenv("PROJECTDIR"), "tmp"), "verbose")
+				dir := testutils.GetTemporaryHomeDir()
 				filePath := path.Join(dir, "stderr")
 				logFile, _ := os.OpenFile(filePath, os.O_WRONLY|os.O_CREATE|os.O_SYNC, 0644)
 				syscall.Dup2(int(logFile.Fd()), 2)

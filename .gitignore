@@ -26,3 +26,4 @@ _testmain.go
 tmp/
 testdata/bob/random_seed
 testdata/alice/random_seed
+stderr
