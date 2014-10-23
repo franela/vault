@@ -11,5 +11,11 @@ debug:
 fmt: 
 	go fmt ./...
 
-.PHONY: test debug
-	
+install:
+	go get github.com/mitchellh/gox
+	sudo gox -build-toolchain
+build:
+	rm -fr build
+	gox --output "build/{{.OS}}/{{.Arch}}/vault" ./... 
+
+.PHONY: test debug build install fmt	
