@@ -90,6 +90,20 @@ func TestSet(t *testing.T) {
 				g.Assert(code).Equal(3)
 			})
 
+			g.It("Should fail if file to encrypt doesn't exist or cannot be accesed", func() {
+				testutils.SetTestGPGHome("bob")
+
+				v := &vault.Vaultfile{}
+				v.Recipients = []string{"bob@example.com"}
+				v.Save()
+
+				c, _ := Factory()
+
+				code := c.Run([]string{"-f", path.Join("some", "crazy", "unexisting", "path"), "set_test"})
+
+				g.Assert(code).Equal(1)
+			})
+
 			g.It("Should print usage incorrect number of parameters are sent", func() {
 				testutils.SetTestGPGHome("bob")
 				v := &vault.Vaultfile{}
@@ -114,7 +128,6 @@ func TestSet(t *testing.T) {
 				g.Assert(ui.GetOutput()).Equal(setHelpText)
 			})
 
-			g.It("Should fail if file to encrypt doesn't exist or cannot be accesed")
 			g.It("Should fail if encrypted file cannot be saved")
 			g.It("Should fail if encrypted file path starts with '..' or '/'")
 		})
