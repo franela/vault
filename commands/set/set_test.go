@@ -81,6 +81,8 @@ func TestSet(t *testing.T) {
 			})
 
 			g.It("Should encrypt only for recipients in the Vaultfile")
+			g.It("Should fail if encrypted file cannot be saved")
+			g.It("Should fail if encrypted file cannot be saved")
 
 			g.It("Should fail if Vaultfile recipients is empty", func() {
 				c, _ := Factory()
@@ -128,8 +130,31 @@ func TestSet(t *testing.T) {
 				g.Assert(ui.GetOutput()).Equal(setHelpText)
 			})
 
-			g.It("Should fail if encrypted file cannot be saved")
-			g.It("Should fail if encrypted file path starts with '..' or '/'")
+			g.It("Should fail to encrypt if destination is not under the current path", func() {
+				testutils.SetTestGPGHome("bob")
+				v := &vault.Vaultfile{}
+				v.Recipients = []string{"bob@example.com"}
+				v.Save()
+
+				c, _ := Factory()
+				code := c.Run([]string{"this is a test", "../set_test"})
+
+				g.Assert(code).Equal(1)
+			})
+
+			g.It("Should fail to encrypt files if destination is not under the current path", func() {
+				testutils.SetTestGPGHome("bob")
+
+				v := &vault.Vaultfile{}
+				v.Recipients = []string{"bob@example.com"}
+				v.Save()
+
+				c, _ := Factory()
+
+				code := c.Run([]string{"-f", path.Join(testutils.GetProjectDir(), "testdata", "set_test"), "/set_test"})
+
+				g.Assert(code).Equal(1)
+			})
 		})
 	})
 }
