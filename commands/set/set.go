@@ -33,6 +33,11 @@ func (setCommand) Run(args []string) int {
 		return 1
 	}
 
+	if len(vaultFile.Recipients) == 0 {
+		ui.Printf("Cannot set in vault if Vaultfile has no recipients. Please add at least one recipient.\n")
+		return 3
+	}
+
 	cmdFlags := flag.NewFlagSet("set", flag.ContinueOnError)
 
 	var fileName string
