@@ -5,6 +5,7 @@ import (
 	"github.com/mitchellh/cli"
 	"log"
 	"os"
+	"os/exec"
 
 	add "github.com/franela/vault/commands/add"
 	get "github.com/franela/vault/commands/get"
@@ -16,9 +17,11 @@ import (
 )
 
 func main() {
-	//var verbose = flag.Bool("verbose", false, "Indicate if is verbose")
-	//flag.Parse();
-	//fmt.Println(*verbose)
+
+	if !isGPGInstalled() {
+		log.Println("Could not find GPG in your PATH. Please make sure it is installed and in your PATH.")
+		os.Exit(3)
+	}
 
 	c := initializeCli(os.Args[1:])
 	exitStatus, err := c.Run()
@@ -27,6 +30,16 @@ func main() {
 	}
 
 	os.Exit(exitStatus)
+}
+
+func isGPGInstalled() bool {
+	_, err := exec.LookPath("gpg")
+
+	if err != nil {
+		return false
+	}
+
+	return true
 }
 
 func initializeCli(args []string) *cli.CLI {
