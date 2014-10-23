@@ -5,6 +5,7 @@ import (
 	"github.com/franela/vault/ui"
 	"github.com/franela/vault/vault"
 	"github.com/mitchellh/cli"
+	"log"
 	"strings"
 )
 
@@ -45,8 +46,9 @@ func (self addCommand) Run(args []string) int {
 		return 1
 	} else {
 		for _, recipient := range args {
-			if !strings.Contains(recipient, strings.Join(vaultFile.Recipients, " ")) {
-				vaultFile.Recipients = append(vaultFile.Recipients, recipient)
+			if !strings.Contains(strings.Join(vaultFile.Recipients, " "), recipient) {
+				log.Printf("Adding [%s] to Vaultfile\n", recipient)
+				vaultFile.Recipients = append(vaultFile.Recipients, strings.TrimSpace(recipient))
 			}
 		}
 		if err := vaultFile.Save(); err != nil {

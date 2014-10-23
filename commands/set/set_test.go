@@ -77,7 +77,15 @@ func TestSet(t *testing.T) {
 			})
 
 			g.It("Should encrypt only for recipients in the Vaultfile")
-			g.It("Should fail if Vaultfile recipients is empty")
+
+			g.It("Should fail if Vaultfile recipients is empty", func() {
+				c, _ := Factory()
+
+				code := c.Run([]string{"this is a test", "set_test"})
+
+				g.Assert(code).Equal(3)
+			})
+
 			g.It("Should fail if file to encrypt doesn't exist or cannot be accesed")
 			g.It("Should fail if encrypted file cannot be saved")
 			g.It("Should fail if encrypted file path starts with '..' or '/'")

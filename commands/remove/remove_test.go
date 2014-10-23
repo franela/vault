@@ -21,8 +21,31 @@ func TestRemove(t *testing.T) {
 		})
 
 		g.Describe("#Run", func() {
-			g.It("Should not fail if recipient doesn't exist")
-			g.It("Should allow removal of multiple recipients")
+			g.It("Should not fail if recipient doesn't exist", func() {
+				v := vault.Vaultfile{}
+				v.Recipients = []string{"bob@example.com"}
+				v.Save()
+
+				c, _ := Factory()
+
+				code := c.Run([]string{"alice@example.com"})
+
+				g.Assert(code).Equal(0)
+			})
+
+			g.It("Should allow removal of multiple recipients", func() {
+				v := vault.Vaultfile{}
+				v.Recipients = []string{"bob@example.com", "alice@example.com"}
+				v.Save()
+
+				c, _ := Factory()
+
+				code := c.Run([]string{"alice@example.com", "bob@example.com"})
+
+				g.Assert(code).Equal(0)
+				newVaultfile, _ := vault.LoadVaultfile()
+				g.Assert(newVaultfile.Recipients).Equal([]string{})
+			})
 
 			g.It("Should remove recipients", func() {
 				v := vault.Vaultfile{}
@@ -35,11 +58,12 @@ func TestRemove(t *testing.T) {
 				removeCmd, _ := c.(removeCommand)
 				removeCmd.Repair = &repairCommand
 
-				removeCmd.Run([]string{"alice@example.com"})
+				code := removeCmd.Run([]string{"alice@example.com"})
 
 				newVaultfile, _ := vault.LoadVaultfile()
 				g.Assert(newVaultfile.Recipients).Equal([]string{"bob@example.com"})
 				g.Assert(repairCommand.RunCalled).IsTrue()
+				g.Assert(code).Equal(0)
 			})
 		})
 	})
