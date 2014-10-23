@@ -6,8 +6,10 @@ import (
 	"github.com/franela/vault/ui"
 	"github.com/franela/vault/vault"
 	"github.com/mitchellh/cli"
+	"os"
 	"path"
 	"path/filepath"
+	"strings"
 )
 
 const setHelpText = `
@@ -62,6 +64,14 @@ func (setCommand) Run(args []string) int {
 
 	if len(fileName) > 0 {
 		vaultPath := args[0]
+		if ok, err := isUnderCurrentPath(vaultPath); err != nil || !ok {
+			if err != nil {
+				ui.Printf("%s\n", err)
+			} else {
+				ui.Printf("Destination should be under current path.\n")
+			}
+			return 1
+		}
 		if filepath.Ext(vaultPath) != ".asc" {
 			vaultPath = vaultPath + ".asc"
 		}
@@ -78,6 +88,14 @@ func (setCommand) Run(args []string) int {
 
 		text := args[0]
 		vaultPath := args[1]
+		if ok, err := isUnderCurrentPath(vaultPath); err != nil || !ok {
+			if err != nil {
+				ui.Printf("%s\n", err)
+			} else {
+				ui.Printf("Destination should be under current path.\n")
+			}
+			return 1
+		}
 		if filepath.Ext(vaultPath) != ".asc" {
 			vaultPath = vaultPath + ".asc"
 		}
@@ -91,6 +109,21 @@ func (setCommand) Run(args []string) int {
 	}
 
 	return 0
+}
+
+func isUnderCurrentPath(p string) (bool, error) {
+	abs := ""
+	wd, err := os.Getwd()
+	if err != nil {
+		return false, err
+	}
+	if path.IsAbs(p) {
+		abs = p
+	} else {
+		abs = path.Join(wd, path.Dir(p))
+	}
+
+	return strings.HasPrefix(abs, wd), nil
 }
 
 func (setCommand) Synopsis() string {

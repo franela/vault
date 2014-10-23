@@ -13,7 +13,24 @@ import (
 
 func TestMain(t *testing.T) {
 	g := Goblin(t)
+
 	g.Describe("Main", func() {
+		g.Describe("#isGPGInstalled", func() {
+			g.It("Should return false if gpg is not in the PATH", func() {
+				prevPath := os.Getenv("PATH")
+
+				defer func() {
+					os.Setenv("PATH", prevPath)
+				}()
+				os.Setenv("PATH", "")
+
+				g.Assert(isGPGInstalled()).IsFalse()
+			})
+			g.It("Should return true if gpg is in the PATH", func() {
+				g.Assert(isGPGInstalled()).IsTrue()
+			})
+		})
+
 		g.Describe("#Run", func() {
 			g.It("Should log to dev/null by default if no verbose flag is set ", func() {
 				dir := testutils.GetTemporaryHomeDir()
