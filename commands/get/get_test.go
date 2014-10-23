@@ -68,7 +68,21 @@ func TestGet(t *testing.T) {
 				g.Assert(string(output)).Equal("This is a test")
 			})
 
-			g.It("Should show help when called without arguments")
+			g.It("Should print usage incorrect number of parameters are sent", func() {
+				c, _ := Factory()
+
+				getCmd, _ := c.(getCommand)
+				code := getCmd.Run([]string{})
+
+				g.Assert(code).Equal(1)
+				g.Assert(ui.GetOutput()).Equal(getHelpText)
+
+				code = getCmd.Run([]string{"file1", "file2"})
+
+				g.Assert(code).Equal(1)
+				g.Assert(ui.GetOutput()).Equal(getHelpText)
+
+			})
 		})
 	})
 }

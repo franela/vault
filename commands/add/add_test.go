@@ -2,6 +2,7 @@ package add
 
 import (
 	. "github.com/franela/goblin"
+	"github.com/franela/vault/ui"
 	"github.com/franela/vault/vault"
 	"github.com/franela/vault/vault/testutils"
 	"github.com/mitchellh/cli"
@@ -14,10 +15,12 @@ func TestAdd(t *testing.T) {
 	g.Describe("Add", func() {
 		g.BeforeEach(func() {
 			vault.SetHomeDir(testutils.GetTemporaryHomeDir())
+			ui.DEBUG = true
 		})
 
 		g.AfterEach(func() {
 			testutils.RemoveTemporaryHomeDir(vault.UnsetHomeDir())
+			ui.DEBUG = false
 		})
 
 		g.Describe("#Run", func() {
@@ -64,6 +67,16 @@ func TestAdd(t *testing.T) {
 				newVaultfile, _ := vault.LoadVaultfile()
 				g.Assert(newVaultfile.Recipients).Equal([]string{"bob@example.com", "alice@example.com"})
 				g.Assert(repairCommand.RunCalled).IsTrue()
+			})
+
+			g.It("Should print usage if no parameters are sent", func() {
+				c, _ := Factory()
+
+				addCmd, _ := c.(addCommand)
+				code := addCmd.Run([]string{})
+
+				g.Assert(code).Equal(1)
+				g.Assert(ui.GetOutput()).Equal(addHelpText)
 			})
 		})
 	})

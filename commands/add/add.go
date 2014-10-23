@@ -9,6 +9,10 @@ import (
 )
 
 const addHelpText = `
+Usage: vault add recipients...
+
+  Add specified recipients to the Vaultfile. If specified recipients
+  already exist, vault will ignore them
 `
 
 func Factory() (cli.Command, error) {
@@ -30,6 +34,12 @@ func (addCommand) Help() string {
 }
 
 func (self addCommand) Run(args []string) int {
+
+	if len(args) == 0 {
+		ui.Printf(addHelpText)
+		return 1
+	}
+
 	if vaultFile, err := vault.LoadVaultfile(); err != nil {
 		ui.Printf("Error opening Vaultfile: %s", err)
 		return 1

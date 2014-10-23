@@ -11,6 +11,10 @@ import (
 )
 
 const getHelpText = `
+Usage: vault get [options]
+
+  Add specified recipients to the Vaultfile. If specified recipients
+  already exist, vault will ignore them
 `
 
 func Factory() (cli.Command, error) {
@@ -36,6 +40,11 @@ func (getCommand) Run(args []string) int {
 	}
 
 	args = cmdFlags.Args()
+
+	if len(args) != 1 {
+		ui.Printf(getHelpText)
+		return 1
+	}
 
 	file := args[0]
 	if filepath.Ext(file) != ".asc" {
