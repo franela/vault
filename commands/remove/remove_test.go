@@ -21,7 +21,18 @@ func TestRemove(t *testing.T) {
 		})
 
 		g.Describe("#Run", func() {
-			g.It("Should not fail if recipient doesn't exist")
+			g.It("Should not fail if recipient doesn't exist", func() {
+				v := vault.Vaultfile{}
+				v.Recipients = []string{"bob@example.com"}
+				v.Save()
+
+				c, _ := Factory()
+
+				code := c.Run([]string{"alice@example.com"})
+
+				g.Assert(code).Equal(0)
+			})
+
 			g.It("Should allow removal of multiple recipients")
 
 			g.It("Should remove recipients", func() {

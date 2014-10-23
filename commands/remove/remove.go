@@ -34,11 +34,14 @@ func (self removeCommand) Run(args []string) int {
 
 		recipient := args[0]
 
-		pos := 0
+		pos := -1
 		for i, r := range vaultFile.Recipients {
 			if r == recipient {
 				pos = i
 			}
+		}
+		if pos == -1 {
+			return 0
 		}
 		if len(vaultFile.Recipients) == pos+1 {
 			// Removing last element
