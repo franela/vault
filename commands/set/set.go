@@ -94,5 +94,5 @@ func (setCommand) Run(args []string) int {
 }
 
 func (setCommand) Synopsis() string {
-	return ""
+	return "Store files or plain-text intro your vault."
 }

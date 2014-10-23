@@ -16,10 +16,6 @@ import (
 )
 
 func main() {
-	//var verbose = flag.Bool("verbose", false, "Indicate if is verbose")
-	//flag.Parse();
-	//fmt.Println(*verbose)
-
 	c := initializeCli(os.Args[1:])
 	exitStatus, err := c.Run()
 	if err != nil {

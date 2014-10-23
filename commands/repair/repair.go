@@ -12,6 +12,7 @@ import (
 )
 
 const repairHelpText = `
+    Ensures that all your vault files are encrypted for the recipients in your vault.
 `
 
 func Factory() (cli.Command, error) {
@@ -57,5 +58,5 @@ func (repairCommand) Run(args []string) int {
 }
 
 func (repairCommand) Synopsis() string {
-	return ""
+	return "Re-encrypts all your vault files for your current recipients."
 }

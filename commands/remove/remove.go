@@ -75,5 +75,5 @@ func (self removeCommand) Run(args []string) int {
 }
 
 func (removeCommand) Synopsis() string {
-	return ""
+	return "Removes one or many recipients from your vault"
 }

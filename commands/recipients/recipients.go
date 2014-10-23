@@ -33,5 +33,5 @@ func (recipientsCommand) Run(args []string) int {
 }
 
 func (recipientsCommand) Synopsis() string {
-	return ""
+	return "Lists all your current vault recipients."
 }

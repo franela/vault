@@ -68,5 +68,5 @@ func (getCommand) Run(args []string) int {
 }
 
 func (getCommand) Synopsis() string {
-	return ""
+	return "Gets a file from your vault"
 }
