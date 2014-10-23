@@ -81,7 +81,6 @@ func TestGet(t *testing.T) {
 
 				g.Assert(code).Equal(1)
 				g.Assert(ui.GetOutput()).Equal(getHelpText)
-
 			})
 		})
 	})

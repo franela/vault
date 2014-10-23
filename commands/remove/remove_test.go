@@ -2,6 +2,7 @@ package remove
 
 import (
 	. "github.com/franela/goblin"
+	"github.com/franela/vault/ui"
 	"github.com/franela/vault/vault"
 	"github.com/franela/vault/vault/testutils"
 	"github.com/mitchellh/cli"
@@ -14,10 +15,12 @@ func TestRemove(t *testing.T) {
 	g.Describe("Remove", func() {
 		g.BeforeEach(func() {
 			vault.SetHomeDir(testutils.GetTemporaryHomeDir())
+			ui.DEBUG = true
 		})
 
 		g.AfterEach(func() {
 			testutils.RemoveTemporaryHomeDir(vault.UnsetHomeDir())
+			ui.DEBUG = false
 		})
 
 		g.Describe("#Run", func() {
@@ -64,6 +67,16 @@ func TestRemove(t *testing.T) {
 				g.Assert(newVaultfile.Recipients).Equal([]string{"bob@example.com"})
 				g.Assert(repairCommand.RunCalled).IsTrue()
 				g.Assert(code).Equal(0)
+			})
+
+			g.It("Should print usage incorrect number of parameters are sent", func() {
+				c, _ := Factory()
+
+				removeCommand, _ := c.(removeCommand)
+				code := removeCommand.Run([]string{})
+
+				g.Assert(code).Equal(1)
+				g.Assert(ui.GetOutput()).Equal(removeHelpText)
 			})
 		})
 	})

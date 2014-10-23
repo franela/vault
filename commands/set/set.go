@@ -11,6 +11,10 @@ import (
 )
 
 const setHelpText = `
+Usage: vault set [options] vaultpath [text]
+
+   Sets something into the vault. Either plain text or files using the -f 
+   parameter are allowed.
 `
 
 func Factory() (cli.Command, error) {
@@ -45,10 +49,16 @@ func (setCommand) Run(args []string) int {
 	cmdFlags.StringVar(&fileName, "f", "", "specify the file to encrypt")
 
 	if err := cmdFlags.Parse(args); err != nil {
+		ui.Printf(setHelpText)
 		return 1
 	}
 
 	args = cmdFlags.Args()
+
+	if len(args) == 0 || len(args) > 2 {
+		ui.Printf(setHelpText)
+		return 1
+	}
 
 	if len(fileName) > 0 {
 		vaultPath := args[0]
@@ -61,6 +71,11 @@ func (setCommand) Run(args []string) int {
 			return 1
 		}
 	} else {
+		if len(args) != 2 {
+			ui.Printf(setHelpText)
+			return 1
+		}
+
 		text := args[0]
 		vaultPath := args[1]
 		if filepath.Ext(vaultPath) != ".asc" {

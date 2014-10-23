@@ -12,8 +12,8 @@ import (
 const addHelpText = `
 Usage: vault add recipients...
 
-  Add specified recipients to the Vaultfile. If specified recipients
-  already exist, vault will ignore them
+  Add specified recipients to the Vaultfile and re-encrypts all your
+  vault files. If specified recipients already exist, vault will ignore them
 `
 
 func Factory() (cli.Command, error) {

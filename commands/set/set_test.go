@@ -3,6 +3,7 @@ package set
 import (
 	. "github.com/franela/goblin"
 	"github.com/franela/vault/gpg"
+	"github.com/franela/vault/ui"
 	"github.com/franela/vault/vault"
 	"github.com/franela/vault/vault/testutils"
 	"os"
@@ -17,10 +18,13 @@ func TestSet(t *testing.T) {
 		g.Describe("#Run", func() {
 			g.BeforeEach(func() {
 				vault.SetHomeDir(testutils.GetTemporaryHomeDir())
+				ui.DEBUG = true
 			})
 
 			g.AfterEach(func() {
 				testutils.RemoveTemporaryHomeDir(vault.UnsetHomeDir())
+				ui.DEBUG = false
+				ui.GetOutput() //Cleans the output
 			})
 
 			g.It("Should create an encrypted file given a text", func() {
@@ -84,6 +88,30 @@ func TestSet(t *testing.T) {
 				code := c.Run([]string{"this is a test", "set_test"})
 
 				g.Assert(code).Equal(3)
+			})
+
+			g.It("Should print usage incorrect number of parameters are sent", func() {
+				testutils.SetTestGPGHome("bob")
+				v := &vault.Vaultfile{}
+				v.Recipients = []string{"bob@example.com"}
+				v.Save()
+
+				c, _ := Factory()
+
+				code := c.Run([]string{})
+
+				g.Assert(code).Equal(1)
+				g.Assert(ui.GetOutput()).Equal(setHelpText)
+
+				code = c.Run([]string{"-f"})
+
+				g.Assert(code).Equal(1)
+				g.Assert(ui.GetOutput()).Equal(setHelpText)
+
+				code = c.Run([]string{"/tmp/test"})
+
+				g.Assert(code).Equal(1)
+				g.Assert(ui.GetOutput()).Equal(setHelpText)
 			})
 
 			g.It("Should fail if file to encrypt doesn't exist or cannot be accesed")

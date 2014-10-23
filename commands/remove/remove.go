@@ -9,6 +9,10 @@ import (
 )
 
 const removeHelpText = `
+Usage: vault remove recipients...
+
+    Remove specified recipients from the vaultfile. If
+    specified recipient doesn't exist, vault will ignore it
 `
 
 func Factory() (cli.Command, error) {
@@ -30,6 +34,11 @@ func (removeCommand) Help() string {
 }
 
 func (self removeCommand) Run(args []string) int {
+
+	if len(args) == 0 {
+		ui.Printf(removeHelpText)
+		return 1
+	}
 	if vaultFile, err := vault.LoadVaultfile(); err != nil {
 		ui.Printf("Error opening Vaultfile: %s", err)
 		return 1
