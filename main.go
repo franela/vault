@@ -43,19 +43,21 @@ func isGPGInstalled() bool {
 }
 
 func initializeCli(args []string) *cli.CLI {
-	initFlags := flag.NewFlagSet("init", flag.ContinueOnError)
-	var verbose = initFlags.Bool("verbose", false, "Logs verbose information to stderr")
-	initFlags.Parse(args)
-
-	if *verbose {
-		log.SetOutput(os.Stderr)
-	} else {
-		devNull, _ := os.Open(os.DevNull)
-		log.SetOutput(devNull)
-	}
-
 	c := cli.NewCLI("vault", "0.0.1")
 	c.Args = args
+
+	if !c.IsVersion() && !c.IsHelp() {
+		initFlags := flag.NewFlagSet("verbose", flag.ContinueOnError)
+		var verbose = initFlags.Bool("verbose", false, "Logs verbose information to stderr")
+		initFlags.Parse(args)
+		if *verbose {
+			log.SetOutput(os.Stderr)
+		} else {
+			devNull, _ := os.Open(os.DevNull)
+			log.SetOutput(devNull)
+		}
+	}
+
 	c.Commands = map[string]cli.CommandFactory{
 		"init":       inita.Factory,
 		"set":        set.Factory,
@@ -65,5 +67,6 @@ func initializeCli(args []string) *cli.CLI {
 		"remove":     remove.Factory,
 		"repair":     repair.Factory,
 	}
+
 	return c
 }
