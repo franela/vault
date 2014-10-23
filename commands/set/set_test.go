@@ -80,10 +80,6 @@ func TestSet(t *testing.T) {
 				g.Assert(out).Equal("This is a test")
 			})
 
-			g.It("Should encrypt only for recipients in the Vaultfile")
-			g.It("Should fail if encrypted file cannot be saved")
-			g.It("Should fail if encrypted file cannot be saved")
-
 			g.It("Should fail if Vaultfile recipients is empty", func() {
 				c, _ := Factory()
 
