@@ -65,6 +65,20 @@ func TestAdd(t *testing.T) {
 				g.Assert(newVaultfile.Recipients).Equal([]string{"bob@example.com", "alice@example.com"})
 				g.Assert(repairCommand.RunCalled).IsTrue()
 			})
+
+			g.It("Should add recipients to empty Vaultfile", func() {
+				c, _ := Factory()
+
+				repairCommand := cli.MockCommand{}
+				addCmd, _ := c.(addCommand)
+				addCmd.Repair = &repairCommand
+
+				addCmd.Run([]string{"alice@example.com"})
+
+				newVaultfile, _ := vault.LoadVaultfile()
+				g.Assert(newVaultfile.Recipients).Equal([]string{"alice@example.com"})
+				g.Assert(repairCommand.RunCalled).IsTrue()
+			})
 		})
 	})
 }
