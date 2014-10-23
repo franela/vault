@@ -2,6 +2,7 @@ package remove
 
 import (
 	"fmt"
+	"github.com/franela/vault/commands/repair"
 	"github.com/franela/vault/ui"
 	"github.com/franela/vault/vault"
 	"github.com/mitchellh/cli"
@@ -11,7 +12,13 @@ const removeHelpText = `
 `
 
 func Factory() (cli.Command, error) {
-	return removeCommand{}, nil
+	repairCmd, err := repair.Factory()
+
+	if err != nil {
+		panic(err)
+	}
+
+	return removeCommand{Repair: repairCmd}, nil
 }
 
 type removeCommand struct {
@@ -32,23 +39,22 @@ func (self removeCommand) Run(args []string) int {
 			return 0
 		}
 
-		recipient := args[0]
-
-		pos := -1
-		for i, r := range vaultFile.Recipients {
-			if r == recipient {
-				pos = i
+		for _, recipient := range args {
+			pos := -1
+			for i, r := range vaultFile.Recipients {
+				if r == recipient {
+					pos = i
+				}
 			}
-		}
-		if pos == -1 {
-			return 0
-		}
-		if len(vaultFile.Recipients) == pos+1 {
-			// Removing last element
-			vaultFile.Recipients = vaultFile.Recipients[:pos]
-		} else {
-			fmt.Println(vaultFile.Recipients)
-			vaultFile.Recipients = append(vaultFile.Recipients[:pos], vaultFile.Recipients[pos+1:]...)
+			if pos != -1 {
+				if len(vaultFile.Recipients) == pos+1 {
+					// Removing last element
+					vaultFile.Recipients = vaultFile.Recipients[:pos]
+				} else {
+					fmt.Println(vaultFile.Recipients)
+					vaultFile.Recipients = append(vaultFile.Recipients[:pos], vaultFile.Recipients[pos+1:]...)
+				}
+			}
 		}
 		if err := vaultFile.Save(); err != nil {
 			ui.Printf("Error saving Vaultfile: %s", err)
