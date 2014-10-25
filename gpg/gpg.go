@@ -10,11 +10,19 @@ import (
 	"strings"
 )
 
+func getGPGHomeDir() []string {
+	if len(os.Getenv("GNUPGHOME")) > 0 {
+		return []string{"--homedir", os.Getenv("GNUPGHOME")}
+	}
+	return []string{}
+}
+
 func Decrypt(filePath string) (string, error) {
-	decryptArgs := []string{"--homedir", os.Getenv("GNUPGHOME"), "--decrypt", "--armor", "--batch", "--yes", filePath}
+	decryptArgs := append(getGPGHomeDir(), "--decrypt", "--armor", "--batch", "--yes", filePath)
 
 	log.Printf("Running: gpg %s\n", strings.Join(decryptArgs, " "))
 	cmd := exec.Command("gpg", decryptArgs...)
+	cmd.Env = nil
 	cmd.Stderr = os.Stderr
 	out, err := cmd.Output()
 
@@ -27,10 +35,11 @@ func Decrypt(filePath string) (string, error) {
 
 func DecryptFile(outputFile, filePath string) error {
 
-	decryptArgs := []string{"--homedir", os.Getenv("GNUPGHOME"), "--decrypt", "--armor", "--batch", "--yes", "--output", outputFile, filePath}
+	decryptArgs := append(getGPGHomeDir(), "--decrypt", "--armor", "--batch", "--yes", "--output", outputFile, filePath)
 
 	log.Printf("Running: gpg %s\n", strings.Join(decryptArgs, " "))
 	cmd := exec.Command("gpg", decryptArgs...)
+	cmd.Env = nil
 	cmd.Stderr = os.Stderr
 
 	_, err := cmd.Output()
@@ -47,7 +56,7 @@ func Encrypt(filePath string, text string, recipients []string) error {
 		return err
 	}
 
-	encryptArgs := []string{"--homedir", os.Getenv("GNUPGHOME"), "--encrypt", "--armor", "--batch", "--yes", "--output", filePath}
+	encryptArgs := append(getGPGHomeDir(), "--encrypt", "--armor", "--batch", "--yes", "--output", filePath)
 
 	for _, recipient := range recipients {
 		encryptArgs = append(encryptArgs, "--recipient")
@@ -56,6 +65,7 @@ func Encrypt(filePath string, text string, recipients []string) error {
 
 	log.Printf("Running: gpg %s\n", strings.Join(encryptArgs, " "))
 	cmd := exec.Command("gpg", encryptArgs...)
+	cmd.Env = nil
 	cmd.Stderr = os.Stderr
 	cmd.Stdin = strings.NewReader(text)
 	_, err := cmd.Output()
@@ -72,7 +82,7 @@ func EncryptFile(filePath string, sourceFile string, recipients []string) error 
 		return err
 	}
 
-	encryptArgs := []string{"--homedir", os.Getenv("GNUPGHOME"), "--encrypt", "--armor", "--batch", "--yes", "--output", filePath}
+	encryptArgs := append(getGPGHomeDir(), "--encrypt", "--armor", "--batch", "--yes", "--output", filePath)
 
 	for _, recipient := range recipients {
 		encryptArgs = append(encryptArgs, "--recipient")
@@ -83,6 +93,7 @@ func EncryptFile(filePath string, sourceFile string, recipients []string) error 
 
 	log.Printf("Running: gpg %s\n", strings.Join(encryptArgs, " "))
 	cmd := exec.Command("gpg", encryptArgs...)
+	cmd.Env = nil
 	cmd.Stderr = os.Stderr
 	_, err := cmd.Output()
 
@@ -93,8 +104,8 @@ func EncryptFile(filePath string, sourceFile string, recipients []string) error 
 }
 
 func ReEncryptFile(src, dst string, recipients []string) error {
-	decryptArgs := []string{"--homedir", os.Getenv("GNUPGHOME"), "--decrypt", "--armor", "--batch", "--yes", src}
-	encryptArgs := []string{"--homedir", os.Getenv("GNUPGHOME"), "--encrypt", "--armor", "--batch", "--yes", "--output", dst}
+	decryptArgs := append(getGPGHomeDir(), "--decrypt", "--armor", "--batch", "--yes", src)
+	encryptArgs := append(getGPGHomeDir(), "--encrypt", "--armor", "--batch", "--yes", "--output", dst)
 
 	for _, recipient := range recipients {
 		encryptArgs = append(encryptArgs, "--recipient")
@@ -102,7 +113,9 @@ func ReEncryptFile(src, dst string, recipients []string) error {
 	}
 
 	decryptCmd := exec.Command("gpg", decryptArgs...)
+	decryptCmd.Env = nil
 	encryptCmd := exec.Command("gpg", encryptArgs...)
+	encryptCmd.Env = nil
 
 	srcFile, fileErr := os.Open(src)
 	if fileErr != nil {
