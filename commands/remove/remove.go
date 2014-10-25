@@ -13,6 +13,7 @@ Usage: vault remove recipients...
 
     Remove specified recipients from the vaultfile. If
     specified recipient doesn't exist, vault will ignore it
+
 `
 
 func Factory() (cli.Command, error) {

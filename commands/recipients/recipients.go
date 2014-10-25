@@ -7,6 +7,9 @@ import (
 )
 
 const recipientsHelpText = `
+Usage
+
+    Lists current vault recipients.
 `
 
 func Factory() (cli.Command, error) {

@@ -11,10 +11,15 @@ import (
 )
 
 const getHelpText = `
-Usage: vault get [options]
+Usage: vault get [options] vaultpath
 
-  Add specified recipients to the Vaultfile. If specified recipients
-  already exist, vault will ignore them
+    Retrieves a file from your Vault. By defualt vault will show results
+    through stdout unless -o option is used
+
+Options:
+
+    -o	Output file
+
 `
 
 func Factory() (cli.Command, error) {

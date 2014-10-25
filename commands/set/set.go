@@ -13,10 +13,15 @@ import (
 )
 
 const setHelpText = `
-Usage: vault set [options] vaultpath [text]
+Usage: vault set [options] [text] vaultpath
 
    Sets something into the vault. Either plain text or files using the -f 
    parameter are allowed.
+
+Options: 
+    
+    -f	Input file which will be added to the vault in the specified vaultpath
+
 `
 
 func Factory() (cli.Command, error) {
@@ -40,7 +45,7 @@ func (setCommand) Run(args []string) int {
 	}
 
 	if len(vaultFile.Recipients) == 0 {
-		ui.Printf("Cannot set in vault if Vaultfile has no recipients. Please add at least one recipient.\n")
+		ui.Printf("Cannot set in vault if Vaultfile has no recipients. Use `vault add` to add one or more recipients.\n")
 		return 3
 	}
 

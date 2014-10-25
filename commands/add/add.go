@@ -15,6 +15,7 @@ Usage: vault add recipients...
   Add specified recipients to the vault and re-encrypts all your
   vault files. If specified recipients already exist, vault will ignore them.
   Spaced delimited list of recipients is allowed (ex: bob@example.com alice@example.com) 
+
 `
 
 func Factory() (cli.Command, error) {
