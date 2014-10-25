@@ -65,5 +65,11 @@ func TestVaultfile(t *testing.T) {
 			g.Assert(err == nil).IsTrue()
 			g.Assert(v).Equal(&Vaultfile{})
 		})
+
+		g.It("Should return an error when trying to parse the Vaultfile", func() {
+			ioutil.WriteFile(path.Join(GetHomeDir(), "Vaultfile"), []byte("Not a JSON"), 0644)
+			_, err := LoadVaultfile()
+			g.Assert(err == nil).IsFalse()
+		})
 	})
 }
