@@ -29,7 +29,7 @@ func TestInit(t *testing.T) {
 				v, err := vault.LoadVaultfile()
 
 				g.Assert(err == nil).IsTrue()
-				g.Assert(v.Recipients).Equal([]vault.VaultRecipient{vault.NewRecipient("3B9CEC3B5069113E2ED39AC9843E01FBCE44AAAA:a@a.com"), vault.NewRecipient("BBBBEC3B5069113E2ED39AC9843E01FBCE44BBBB:b@b.com")})
+				g.Assert(v.Recipients).Equal([]vault.VaultRecipient{vault.VaultRecipient{Fingerprint: "3B9CEC3B5069113E2ED39AC9843E01FBCE44AAAA", Name: "a@a.com"}, vault.VaultRecipient{Fingerprint: "BBBBEC3B5069113E2ED39AC9843E01FBCE44BBBB", Name: "b@b.com"}})
 				g.Assert(exitCode).Equal(0)
 			})
 		})

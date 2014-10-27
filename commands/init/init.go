@@ -28,8 +28,11 @@ func (initCommand) Help() string {
 
 func (initCommand) Run(args []string) int {
 	v := vault.Vaultfile{}
+
 	for _, r := range args {
-		v.Recipients = append(v.Recipients, vault.NewRecipient(r))
+		if recipient, err := vault.NewRecipient(r); err == nil {
+			v.Recipients = append(v.Recipients, *recipient)
+		}
 	}
 	err := v.Save()
 

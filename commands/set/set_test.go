@@ -32,7 +32,7 @@ func TestSet(t *testing.T) {
 
 				v := &vault.Vaultfile{}
 				v.Recipients = []vault.VaultRecipient{
-					vault.NewRecipient("2B13EC3B5769013E2ED29AC9643E01FBCE44E394:bob@example.com"),
+					vault.VaultRecipient{Fingerprint: "2B13EC3B5769013E2ED29AC9643E01FBCE44E394", Name: "bob@example.com"},
 				}
 				v.Save()
 
@@ -51,7 +51,7 @@ func TestSet(t *testing.T) {
 
 				v := &vault.Vaultfile{}
 				v.Recipients = []vault.VaultRecipient{
-					vault.NewRecipient("2B13EC3B5769013E2ED29AC9643E01FBCE44E394:bob@example.com"),
+					vault.VaultRecipient{Fingerprint: "2B13EC3B5769013E2ED29AC9643E01FBCE44E394", Name: "bob@example.com"},
 				}
 				v.Save()
 
@@ -70,7 +70,7 @@ func TestSet(t *testing.T) {
 
 				v := &vault.Vaultfile{}
 				v.Recipients = []vault.VaultRecipient{
-					vault.NewRecipient("2B13EC3B5769013E2ED29AC9643E01FBCE44E394:bob@example.com"),
+					vault.VaultRecipient{Fingerprint: "2B13EC3B5769013E2ED29AC9643E01FBCE44E394", Name: "bob@example.com"},
 				}
 				v.Save()
 
@@ -99,7 +99,7 @@ func TestSet(t *testing.T) {
 
 				v := &vault.Vaultfile{}
 				v.Recipients = []vault.VaultRecipient{
-					vault.NewRecipient("2B13EC3B5769013E2ED29AC9643E01FBCE44E394:bob@example.com"),
+					vault.VaultRecipient{Fingerprint: "2B13EC3B5769013E2ED29AC9643E01FBCE44E394", Name: "bob@example.com"},
 				}
 				v.Save()
 
@@ -114,7 +114,7 @@ func TestSet(t *testing.T) {
 				testutils.SetTestGPGHome("bob")
 				v := &vault.Vaultfile{}
 				v.Recipients = []vault.VaultRecipient{
-					vault.NewRecipient("2B13EC3B5769013E2ED29AC9643E01FBCE44E394:bob@example.com"),
+					vault.VaultRecipient{Fingerprint: "2B13EC3B5769013E2ED29AC9643E01FBCE44E394", Name: "bob@example.com"},
 				}
 				v.Save()
 
@@ -140,7 +140,7 @@ func TestSet(t *testing.T) {
 				testutils.SetTestGPGHome("bob")
 				v := &vault.Vaultfile{}
 				v.Recipients = []vault.VaultRecipient{
-					vault.NewRecipient("2B13EC3B5769013E2ED29AC9643E01FBCE44E394:bob@example.com"),
+					vault.VaultRecipient{Fingerprint: "2B13EC3B5769013E2ED29AC9643E01FBCE44E394", Name: "bob@example.com"},
 				}
 				v.Save()
 
@@ -155,7 +155,7 @@ func TestSet(t *testing.T) {
 
 				v := &vault.Vaultfile{}
 				v.Recipients = []vault.VaultRecipient{
-					vault.NewRecipient("2B13EC3B5769013E2ED29AC9643E01FBCE44E394:bob@example.com"),
+					vault.VaultRecipient{Fingerprint: "2B13EC3B5769013E2ED29AC9643E01FBCE44E394", Name: "bob@example.com"},
 				}
 				v.Save()
 

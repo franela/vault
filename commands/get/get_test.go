@@ -31,7 +31,7 @@ func TestGet(t *testing.T) {
 			g.It("Should output decrypted text of a given file", func() {
 				v := vault.Vaultfile{}
 				v.Recipients = []vault.VaultRecipient{
-					vault.NewRecipient("2B13EC3B5769013E2ED29AC9643E01FBCE44E394:bob@example.com"),
+					vault.VaultRecipient{Fingerprint: "2B13EC3B5769013E2ED29AC9643E01FBCE44E394", Name: "bob@example.com"},
 				}
 				v.Save()
 
@@ -46,7 +46,7 @@ func TestGet(t *testing.T) {
 			g.It("Should add .asc extension if not specified", func() {
 				v := vault.Vaultfile{}
 				v.Recipients = []vault.VaultRecipient{
-					vault.NewRecipient("2B13EC3B5769013E2ED29AC9643E01FBCE44E394:bob@example.com"),
+					vault.VaultRecipient{Fingerprint: "2B13EC3B5769013E2ED29AC9643E01FBCE44E394", Name: "bob@example.com"},
 				}
 				v.Save()
 
@@ -61,7 +61,7 @@ func TestGet(t *testing.T) {
 			g.It("Should create a file with decrypted text of a given file", func() {
 				v := vault.Vaultfile{}
 				v.Recipients = []vault.VaultRecipient{
-					vault.NewRecipient("2B13EC3B5769013E2ED29AC9643E01FBCE44E394:bob@example.com"),
+					vault.VaultRecipient{Fingerprint: "2B13EC3B5769013E2ED29AC9643E01FBCE44E394", Name: "bob@example.com"},
 				}
 				v.Save()
 

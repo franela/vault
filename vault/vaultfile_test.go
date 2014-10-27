@@ -25,7 +25,7 @@ func TestVaultfile(t *testing.T) {
 			g.It("Should work", func() {
 				v := &Vaultfile{}
 				v.Recipients = []VaultRecipient{
-					NewRecipient("3B9CEC3B5069113E2ED39AC9843E01FBCE44AAAA:a@a.com"),
+					VaultRecipient{Fingerprint: "3B9CEC3B5069113E2ED39AC9843E01FBCE44AAAA", Name: "a@a.com"},
 				}
 				v.Save()
 
@@ -41,6 +41,35 @@ func TestVaultfile(t *testing.T) {
 		})
 	})
 
+	g.Describe("NewRecipient", func() {
+		g.It("Should run", func() {
+			recipient, _ := NewRecipient("3B9CEC3B5069113E2ED39AC9843E01FBCE44AAAA:a@a.com")
+			g.Assert(recipient).Equal(&VaultRecipient{Fingerprint: "3B9CEC3B5069113E2ED39AC9843E01FBCE44AAAA", Name: "a@a.com"})
+		})
+
+		g.It("Should require both parameters to be present", func() {
+			_, err := NewRecipient("a@a.com")
+			g.Assert(err != nil).IsTrue()
+			_, err = NewRecipient(":a@a.com")
+			g.Assert(err != nil).IsTrue()
+			_, err = NewRecipient("3B9CEC3B5069113E2ED39AC9843E01FBCE44AAAA:")
+			g.Assert(err != nil).IsTrue()
+			_, err = NewRecipient("")
+			g.Assert(err != nil).IsTrue()
+		})
+
+		g.It("Should validate that first argument is a fingerprint", func() {
+			_, err := NewRecipient("a@a.com:3B9CEC3B5069113E2ED39AC9843E01FBCE44AAAA")
+			g.Assert(err != nil).IsTrue()
+		})
+
+		g.It("Should validate that first has the correct amount of characters", func() {
+			_, err := NewRecipient("a@a.com:3B9CEC3B50691")
+			g.Assert(err != nil).IsTrue()
+		})
+
+	})
+
 	g.Describe("LoadVaultfile", func() {
 		g.BeforeEach(func() {
 			SetHomeDir(testutils.GetTemporaryHomeDir())
@@ -53,7 +82,7 @@ func TestVaultfile(t *testing.T) {
 		g.It("Should load existing Vaultfile", func() {
 			v := &Vaultfile{}
 			v.Recipients = []VaultRecipient{
-				NewRecipient("3B9CEC3B5069113E2ED39AC9843E01FBCE44AAAA:a@a.com"),
+				VaultRecipient{Fingerprint: "3B9CEC3B5069113E2ED39AC9843E01FBCE44AAAA", Name: "a@a.com"},
 			}
 			v.Save()
 

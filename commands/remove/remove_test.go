@@ -27,7 +27,7 @@ func TestRemove(t *testing.T) {
 			g.It("Should not fail if recipient doesn't exist", func() {
 				v := vault.Vaultfile{}
 				v.Recipients = []vault.VaultRecipient{
-					vault.NewRecipient("2B13EC3B5769013E2ED29AC9643E01FBCE44E394:bob@example.com"),
+					vault.VaultRecipient{Fingerprint: "2B13EC3B5769013E2ED29AC9643E01FBCE44E394", Name: "bob@example.com"},
 				}
 				v.Save()
 
@@ -41,8 +41,8 @@ func TestRemove(t *testing.T) {
 			g.It("Should allow removal of multiple recipients", func() {
 				v := vault.Vaultfile{}
 				v.Recipients = []vault.VaultRecipient{
-					vault.NewRecipient("2B13EC3B5769013E2ED29AC9643E01FBCE44E394:bob@example.com"),
-					vault.NewRecipient("39A595E45C6C23693074BDA2A74BFF324DC55DBE:alice@example.com"),
+					vault.VaultRecipient{Fingerprint: "2B13EC3B5769013E2ED29AC9643E01FBCE44E394", Name: "bob@example.com"},
+					vault.VaultRecipient{Fingerprint: "39A595E45C6C23693074BDA2A74BFF324DC55DBE", Name: "alice@example.com"},
 				}
 				v.Save()
 
@@ -58,8 +58,8 @@ func TestRemove(t *testing.T) {
 			g.It("Should remove recipients", func() {
 				v := vault.Vaultfile{}
 				v.Recipients = []vault.VaultRecipient{
-					vault.NewRecipient("2B13EC3B5769013E2ED29AC9643E01FBCE44E394:bob@example.com"),
-					vault.NewRecipient("39A595E45C6C23693074BDA2A74BFF324DC55DBE:alice@example.com"),
+					vault.VaultRecipient{Fingerprint: "2B13EC3B5769013E2ED29AC9643E01FBCE44E394", Name: "bob@example.com"},
+					vault.VaultRecipient{Fingerprint: "39A595E45C6C23693074BDA2A74BFF324DC55DBE", Name: "alice@example.com"},
 				}
 				v.Save()
 
@@ -72,7 +72,7 @@ func TestRemove(t *testing.T) {
 				code := removeCmd.Run([]string{"39A595E45C6C23693074BDA2A74BFF324DC55DBE"})
 
 				newVaultfile, _ := vault.LoadVaultfile()
-				g.Assert(newVaultfile.Recipients).Equal([]vault.VaultRecipient{vault.NewRecipient("2B13EC3B5769013E2ED29AC9643E01FBCE44E394:bob@example.com")})
+				g.Assert(newVaultfile.Recipients).Equal([]vault.VaultRecipient{vault.VaultRecipient{Fingerprint: "2B13EC3B5769013E2ED29AC9643E01FBCE44E394", Name: "bob@example.com"}})
 				g.Assert(repairCommand.RunCalled).IsTrue()
 				g.Assert(code).Equal(0)
 			})

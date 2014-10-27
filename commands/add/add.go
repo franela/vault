@@ -48,7 +48,11 @@ func (self addCommand) Run(args []string) int {
 	} else {
 		for _, recipient := range args {
 			foundRecipientInVault := false
-			r := vault.NewRecipient(recipient)
+			r, err := vault.NewRecipient(recipient)
+			if err != nil {
+				return 1
+			}
+
 			for _, vaultRecipient := range vaultFile.Recipients {
 				if vaultRecipient.Fingerprint == r.Fingerprint {
 					foundRecipientInVault = true
@@ -57,7 +61,7 @@ func (self addCommand) Run(args []string) int {
 			}
 			if !foundRecipientInVault {
 				log.Printf("Adding [%s] to Vaultfile\n", recipient)
-				vaultFile.Recipients = append(vaultFile.Recipients, r)
+				vaultFile.Recipients = append(vaultFile.Recipients, *r)
 			}
 
 		}
