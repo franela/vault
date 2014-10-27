@@ -48,5 +48,5 @@ More distributions and source code can be found [here](https://github.com/franel
 
 #Contributing
 
-We're always working to improve vault, but if you find a bug or you just want to collaborate you can send us your PR (with tests please) and we'll be more than glad to review it.
+We're always working to improve vault, but if you find a bug or you just want to collaborate you can send us your PR (include tests when possible).
 
