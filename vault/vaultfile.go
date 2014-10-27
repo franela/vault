@@ -8,7 +8,12 @@ import (
 )
 
 type Vaultfile struct {
-	Recipients []string
+	Recipients []VaultRecipient
+}
+
+type VaultRecipient struct {
+	Name        string
+	Fingerprint string
 }
 
 func LoadVaultfile() (*Vaultfile, error) {

@@ -2,6 +2,7 @@ package gpg
 
 import (
 	"bufio"
+	"github.com/franela/vault/vault"
 	"io"
 	"log"
 	"os"
@@ -114,13 +115,13 @@ func EncryptFile(filePath string, sourceFile string, recipients []string) error 
 	return nil
 }
 
-func ReEncryptFile(src, dst string, recipients []string) error {
+func ReEncryptFile(src, dst string, recipients []vault.VaultRecipient) error {
 	decryptArgs := append(getGPGHomeDir(), "--decrypt", "--armor", "--batch", "--yes", src)
 	encryptArgs := append(getGPGHomeDir(), "--encrypt", "--armor", "--batch", "--yes", "--output", dst)
 
 	for _, recipient := range recipients {
 		encryptArgs = append(encryptArgs, "--recipient")
-		encryptArgs = append(encryptArgs, recipient)
+		encryptArgs = append(encryptArgs, recipient.Fingerprint)
 	}
 
 	decryptCmd := exec.Command("gpg", decryptArgs...)

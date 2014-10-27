@@ -48,10 +48,20 @@ func (self addCommand) Run(args []string) int {
 		return 1
 	} else {
 		for _, recipient := range args {
-			if !strings.Contains(strings.Join(vaultFile.Recipients, " "), recipient) {
-				log.Printf("Adding [%s] to Vaultfile\n", recipient)
-				vaultFile.Recipients = append(vaultFile.Recipients, strings.TrimSpace(recipient))
+			foundRecipientInVault := false
+			recipientFingerprint := strings.Split(recipient, ":")[0]
+			recipientName := strings.Split(recipient, ":")[1]
+			for _, vaultRecipient := range vaultFile.Recipients {
+				if vaultRecipient.Fingerprint == recipientFingerprint {
+					foundRecipientInVault = true
+				}
+
 			}
+			if !foundRecipientInVault {
+				log.Printf("Adding [%s] to Vaultfile\n", recipient)
+				vaultFile.Recipients = append(vaultFile.Recipients, vault.VaultRecipient{Fingerprint: recipientFingerprint, Name: recipientName})
+			}
+
 		}
 		if err := vaultFile.Save(); err != nil {
 			ui.Printf("Error saving Vaultfile: %s", err)
