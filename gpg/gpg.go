@@ -63,7 +63,7 @@ func DecryptFile(outputFile, filePath string) error {
 	return nil
 }
 
-func Encrypt(filePath string, text string, recipients []string) error {
+func Encrypt(filePath string, text string, recipients []vault.VaultRecipient) error {
 	if err := os.MkdirAll(path.Dir(filePath), 0777); err != nil {
 		return err
 	}
@@ -72,7 +72,7 @@ func Encrypt(filePath string, text string, recipients []string) error {
 
 	for _, recipient := range recipients {
 		encryptArgs = append(encryptArgs, "--recipient")
-		encryptArgs = append(encryptArgs, recipient)
+		encryptArgs = append(encryptArgs, recipient.Fingerprint)
 	}
 
 	log.Printf("Running: gpg %s\n", strings.Join(encryptArgs, " "))
@@ -88,7 +88,7 @@ func Encrypt(filePath string, text string, recipients []string) error {
 	return nil
 }
 
-func EncryptFile(filePath string, sourceFile string, recipients []string) error {
+func EncryptFile(filePath string, sourceFile string, recipients []vault.VaultRecipient) error {
 
 	if err := os.MkdirAll(path.Dir(filePath), 0777); err != nil {
 		return err
@@ -98,7 +98,7 @@ func EncryptFile(filePath string, sourceFile string, recipients []string) error 
 
 	for _, recipient := range recipients {
 		encryptArgs = append(encryptArgs, "--recipient")
-		encryptArgs = append(encryptArgs, recipient)
+		encryptArgs = append(encryptArgs, recipient.Fingerprint)
 	}
 
 	encryptArgs = append(encryptArgs, sourceFile)

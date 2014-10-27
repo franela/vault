@@ -28,7 +28,9 @@ func (initCommand) Help() string {
 
 func (initCommand) Run(args []string) int {
 	v := vault.Vaultfile{}
-	v.Recipients = args
+	for _, r := range args {
+		v.Recipients = append(v.Recipients, vault.NewRecipient(r))
+	}
 	err := v.Save()
 
 	if err != nil {

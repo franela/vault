@@ -25,9 +25,12 @@ func TestRecipients(t *testing.T) {
 			})
 
 			g.It("Should output all the recipients in the Vaultfile", func() {
-				vault := vault.Vaultfile{}
-				vault.Recipients = []string{"bob@example.com", "alice@example.com"}
-				vault.Save()
+				v := vault.Vaultfile{}
+				v.Recipients = []vault.VaultRecipient{
+					vault.NewRecipient("2B13EC3B5769013E2ED29AC9643E01FBCE44E394:bob@example.com"),
+					vault.NewRecipient("39A595E45C6C23693074BDA2A74BFF324DC55DBE:alice@example.com"),
+				}
+				v.Save()
 
 				c, _ := Factory()
 
@@ -35,8 +38,8 @@ func TestRecipients(t *testing.T) {
 
 				listedRecipients := ui.GetOutput()
 
-				g.Assert(strings.Contains(listedRecipients, vault.Recipients[0])).IsTrue()
-				g.Assert(strings.Contains(listedRecipients, vault.Recipients[1])).IsTrue()
+				g.Assert(strings.Contains(listedRecipients, v.Recipients[0].ToString())).IsTrue()
+				g.Assert(strings.Contains(listedRecipients, v.Recipients[1].ToString())).IsTrue()
 			})
 		})
 	})

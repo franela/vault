@@ -29,7 +29,7 @@ func (recipientsCommand) Run(args []string) int {
 		return 1
 	} else {
 		for _, recipient := range vaultFile.Recipients {
-			ui.Printf("%s\n", recipient)
+			ui.Printf("%s\n", recipient.ToString())
 		}
 		return 0
 	}

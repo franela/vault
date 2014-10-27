@@ -26,7 +26,7 @@ func TestAdd(t *testing.T) {
 		g.Describe("#Run", func() {
 			g.It("Should not fail if recipient already exist", func() {
 				v := vault.Vaultfile{}
-				v.Recipients = []vault.VaultRecipient{vault.VaultRecipient{Fingerprint: "2B13EC3B5769013E2ED29AC9643E01FBCE44E394", Name: "bob@example.com"}}
+				v.Recipients = []vault.VaultRecipient{vault.NewRecipient("2B13EC3B5769013E2ED29AC9643E01FBCE44E394:bob@example.com")}
 				v.Save()
 
 				c, _ := Factory()
@@ -39,7 +39,7 @@ func TestAdd(t *testing.T) {
 			})
 			g.It("Should allow to add multiple recipients", func() {
 				v := vault.Vaultfile{}
-				v.Recipients = []vault.VaultRecipient{vault.VaultRecipient{Fingerprint: "2B13EC3B5769013E2ED29AC9643E01FBCE44E394", Name: "bob@example.com"}}
+				v.Recipients = []vault.VaultRecipient{vault.NewRecipient("2B13EC3B5769013E2ED29AC9643E01FBCE44E394:bob@example.com")}
 				v.Save()
 
 				c, _ := Factory()
@@ -49,9 +49,9 @@ func TestAdd(t *testing.T) {
 				newVaultfile, _ := vault.LoadVaultfile()
 
 				expectedRecipients := []vault.VaultRecipient{
-					vault.VaultRecipient{Fingerprint: "2B13EC3B5769013E2ED29AC9643E01FBCE44E394", Name: "bob@example.com"},
-					vault.VaultRecipient{Fingerprint: "39A595E45C6C23693074BDA2A74BFF324DC55DBE", Name: "alice@example.com"},
-					vault.VaultRecipient{Fingerprint: "69A595E45C6C23693075BDA2A74BFF324DC55DBF", Name: "third@example.com"},
+					vault.NewRecipient("2B13EC3B5769013E2ED29AC9643E01FBCE44E394:bob@example.com"),
+					vault.NewRecipient("39A595E45C6C23693074BDA2A74BFF324DC55DBE:alice@example.com"),
+					vault.NewRecipient("69A595E45C6C23693075BDA2A74BFF324DC55DBF:third@example.com"),
 				}
 
 				g.Assert(newVaultfile.Recipients).Equal(expectedRecipients)
@@ -60,7 +60,7 @@ func TestAdd(t *testing.T) {
 
 			g.It("Should add new recipients", func() {
 				v := vault.Vaultfile{}
-				v.Recipients = []vault.VaultRecipient{vault.VaultRecipient{Fingerprint: "2B13EC3B5769013E2ED29AC9643E01FBCE44E394", Name: "bob@example.com"}}
+				v.Recipients = []vault.VaultRecipient{vault.NewRecipient("2B13EC3B5769013E2ED29AC9643E01FBCE44E394:bob@example.com")}
 				v.Save()
 
 				c, _ := Factory()
@@ -72,8 +72,8 @@ func TestAdd(t *testing.T) {
 				addCmd.Run([]string{"39A595E45C6C23693074BDA2A74BFF324DC55DBE:alice@example.com"})
 
 				expectedRecipients := []vault.VaultRecipient{
-					vault.VaultRecipient{Fingerprint: "2B13EC3B5769013E2ED29AC9643E01FBCE44E394", Name: "bob@example.com"},
-					vault.VaultRecipient{Fingerprint: "39A595E45C6C23693074BDA2A74BFF324DC55DBE", Name: "alice@example.com"},
+					vault.NewRecipient("2B13EC3B5769013E2ED29AC9643E01FBCE44E394:bob@example.com"),
+					vault.NewRecipient("39A595E45C6C23693074BDA2A74BFF324DC55DBE:alice@example.com"),
 				}
 
 				newVaultfile, _ := vault.LoadVaultfile()
@@ -93,7 +93,7 @@ func TestAdd(t *testing.T) {
 				newVaultfile, _ := vault.LoadVaultfile()
 
 				expectedRecipients := []vault.VaultRecipient{
-					vault.VaultRecipient{Fingerprint: "39A595E45C6C23693074BDA2A74BFF324DC55DBE", Name: "alice@example.com"},
+					vault.NewRecipient("39A595E45C6C23693074BDA2A74BFF324DC55DBE:alice@example.com"),
 				}
 
 				g.Assert(newVaultfile.Recipients).Equal(expectedRecipients)

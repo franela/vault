@@ -22,14 +22,14 @@ func TestInit(t *testing.T) {
 			})
 
 			g.It("Should create a Vaultfile with recipients", func() {
-				desiredRecipients := []string{"a@a.com", "b@b.com"}
+				desiredRecipients := []string{"3B9CEC3B5069113E2ED39AC9843E01FBCE44AAAA:a@a.com", "BBBBEC3B5069113E2ED39AC9843E01FBCE44BBBB:b@b.com"}
 				c, _ := Factory()
 				exitCode := c.Run(desiredRecipients)
 
 				v, err := vault.LoadVaultfile()
 
 				g.Assert(err == nil).IsTrue()
-				g.Assert(v.Recipients).Equal(desiredRecipients)
+				g.Assert(v.Recipients).Equal([]vault.VaultRecipient{vault.NewRecipient("3B9CEC3B5069113E2ED39AC9843E01FBCE44AAAA:a@a.com"), vault.NewRecipient("BBBBEC3B5069113E2ED39AC9843E01FBCE44BBBB:b@b.com")})
 				g.Assert(exitCode).Equal(0)
 			})
 		})

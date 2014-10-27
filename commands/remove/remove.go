@@ -52,7 +52,7 @@ func (self removeCommand) Run(args []string) int {
 		for _, recipient := range args {
 			pos := -1
 			for i, r := range vaultFile.Recipients {
-				if r == recipient {
+				if r.Fingerprint == recipient {
 					pos = i
 				}
 			}

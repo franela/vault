@@ -5,15 +5,14 @@ import (
 	"fmt"
 	"io/ioutil"
 	"path"
+	"strings"
 )
 
-type Vaultfile struct {
-	Recipients []VaultRecipient
-}
+func NewRecipient(recipient string) VaultRecipient {
+	recipientFingerprint := strings.Split(recipient, ":")[0]
+	recipientName := strings.Split(recipient, ":")[1]
 
-type VaultRecipient struct {
-	Name        string
-	Fingerprint string
+	return VaultRecipient{Fingerprint: recipientFingerprint, Name: recipientName}
 }
 
 func LoadVaultfile() (*Vaultfile, error) {
@@ -27,6 +26,19 @@ func LoadVaultfile() (*Vaultfile, error) {
 	} else {
 		return v, nil
 	}
+}
+
+type VaultRecipient struct {
+	Name        string
+	Fingerprint string
+}
+
+func (v VaultRecipient) ToString() string {
+	return v.Fingerprint + ":" + v.Name
+}
+
+type Vaultfile struct {
+	Recipients []VaultRecipient
 }
 
 func (v Vaultfile) Save() error {

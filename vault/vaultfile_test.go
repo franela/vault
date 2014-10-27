@@ -24,7 +24,9 @@ func TestVaultfile(t *testing.T) {
 		g.Describe("#Save", func() {
 			g.It("Should work", func() {
 				v := &Vaultfile{}
-				v.Recipients = []string{"a@a.com"}
+				v.Recipients = []VaultRecipient{
+					NewRecipient("3B9CEC3B5069113E2ED39AC9843E01FBCE44AAAA:a@a.com"),
+				}
 				v.Save()
 
 				content, err := ioutil.ReadFile(path.Join(GetHomeDir(), "Vaultfile"))
@@ -50,7 +52,9 @@ func TestVaultfile(t *testing.T) {
 
 		g.It("Should load existing Vaultfile", func() {
 			v := &Vaultfile{}
-			v.Recipients = []string{"a@a.com"}
+			v.Recipients = []VaultRecipient{
+				NewRecipient("3B9CEC3B5069113E2ED39AC9843E01FBCE44AAAA:a@a.com"),
+			}
 			v.Save()
 
 			v2, err := LoadVaultfile()

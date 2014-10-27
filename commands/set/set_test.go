@@ -31,7 +31,9 @@ func TestSet(t *testing.T) {
 				testutils.SetTestGPGHome("bob")
 
 				v := &vault.Vaultfile{}
-				v.Recipients = []string{"bob@example.com"}
+				v.Recipients = []vault.VaultRecipient{
+					vault.NewRecipient("2B13EC3B5769013E2ED29AC9643E01FBCE44E394:bob@example.com"),
+				}
 				v.Save()
 
 				c, _ := Factory()
@@ -48,7 +50,9 @@ func TestSet(t *testing.T) {
 				testutils.SetTestGPGHome("bob")
 
 				v := &vault.Vaultfile{}
-				v.Recipients = []string{"bob@example.com"}
+				v.Recipients = []vault.VaultRecipient{
+					vault.NewRecipient("2B13EC3B5769013E2ED29AC9643E01FBCE44E394:bob@example.com"),
+				}
 				v.Save()
 
 				c, _ := Factory()
@@ -65,7 +69,9 @@ func TestSet(t *testing.T) {
 				testutils.SetTestGPGHome("bob")
 
 				v := &vault.Vaultfile{}
-				v.Recipients = []string{"bob@example.com"}
+				v.Recipients = []vault.VaultRecipient{
+					vault.NewRecipient("2B13EC3B5769013E2ED29AC9643E01FBCE44E394:bob@example.com"),
+				}
 				v.Save()
 
 				c, _ := Factory()
@@ -92,7 +98,9 @@ func TestSet(t *testing.T) {
 				testutils.SetTestGPGHome("bob")
 
 				v := &vault.Vaultfile{}
-				v.Recipients = []string{"bob@example.com"}
+				v.Recipients = []vault.VaultRecipient{
+					vault.NewRecipient("2B13EC3B5769013E2ED29AC9643E01FBCE44E394:bob@example.com"),
+				}
 				v.Save()
 
 				c, _ := Factory()
@@ -105,7 +113,9 @@ func TestSet(t *testing.T) {
 			g.It("Should print usage incorrect number of parameters are sent", func() {
 				testutils.SetTestGPGHome("bob")
 				v := &vault.Vaultfile{}
-				v.Recipients = []string{"bob@example.com"}
+				v.Recipients = []vault.VaultRecipient{
+					vault.NewRecipient("2B13EC3B5769013E2ED29AC9643E01FBCE44E394:bob@example.com"),
+				}
 				v.Save()
 
 				c, _ := Factory()
@@ -129,7 +139,9 @@ func TestSet(t *testing.T) {
 			g.It("Should fail to encrypt if destination is not under the current path", func() {
 				testutils.SetTestGPGHome("bob")
 				v := &vault.Vaultfile{}
-				v.Recipients = []string{"bob@example.com"}
+				v.Recipients = []vault.VaultRecipient{
+					vault.NewRecipient("2B13EC3B5769013E2ED29AC9643E01FBCE44E394:bob@example.com"),
+				}
 				v.Save()
 
 				c, _ := Factory()
@@ -142,7 +154,9 @@ func TestSet(t *testing.T) {
 				testutils.SetTestGPGHome("bob")
 
 				v := &vault.Vaultfile{}
-				v.Recipients = []string{"bob@example.com"}
+				v.Recipients = []vault.VaultRecipient{
+					vault.NewRecipient("2B13EC3B5769013E2ED29AC9643E01FBCE44E394:bob@example.com"),
+				}
 				v.Save()
 
 				c, _ := Factory()
