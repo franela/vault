@@ -12,7 +12,7 @@ You can define as many Vaults as needed and use them rightaway without changing 
 
 1. Because security is something really important for us and we take it seriously
 2. It really simplifies the friction to work with GPG between multiple teams and recipients
-3. We needed something which was easy to use and platform agonsotic
+3. We needed something which was easy to use and platform agnostic
 4. It was fun to do it and to learn during the process
 
 
