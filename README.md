@@ -44,6 +44,9 @@ You can find Vault for your favorite distrution below:
 
 More distributions and source code can be found [here](https://github.com/franela/vault/releases)
 
+##Installing
+
+You need sure the copy the correct binary into your PATH and to have [GPG](https://www.gnupg.org/download/) installed.
 
 
 #Contributing
