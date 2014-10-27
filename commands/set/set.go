@@ -13,7 +13,7 @@ import (
 )
 
 const setHelpText = `
-Usage: vault set [options] [text] vaultpath
+Usage: vault set [options] vaultpath [text]
 
    Sets something into the vault. Either plain text or files using the -f 
    parameter are allowed.
@@ -91,8 +91,8 @@ func (setCommand) Run(args []string) int {
 			return 1
 		}
 
-		text := args[0]
-		vaultPath := args[1]
+		text := args[1]
+		vaultPath := args[0]
 		if ok, err := isUnderCurrentPath(vaultPath); err != nil || !ok {
 			if err != nil {
 				ui.Printf("%s\n", err)

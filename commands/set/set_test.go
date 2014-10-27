@@ -35,7 +35,7 @@ func TestSet(t *testing.T) {
 				v.Save()
 
 				c, _ := Factory()
-				c.Run([]string{"This is a test", "set_test.asc"})
+				c.Run([]string{"set_test.asc", "This is a test"})
 
 				_, err := os.Stat(path.Join(vault.GetHomeDir(), "set_test.asc"))
 				g.Assert(err == nil).IsTrue()
@@ -52,7 +52,7 @@ func TestSet(t *testing.T) {
 				v.Save()
 
 				c, _ := Factory()
-				c.Run([]string{"This is a test", "set_test"})
+				c.Run([]string{"set_test", "This is a test"})
 
 				_, err := os.Stat(path.Join(vault.GetHomeDir(), "set_test.asc"))
 				g.Assert(err == nil).IsTrue()
@@ -133,7 +133,7 @@ func TestSet(t *testing.T) {
 				v.Save()
 
 				c, _ := Factory()
-				code := c.Run([]string{"this is a test", "../set_test"})
+				code := c.Run([]string{"../set_test", "This is a test"})
 
 				g.Assert(code).Equal(1)
 			})
