@@ -19,7 +19,7 @@ import (
 func main() {
 
 	if !isGPGInstalled() {
-		log.Println("Could not find GPG in your PATH. Please make sure it is installed and in your PATH.")
+		log.Println("Could not find GPG in your PATH. Please make sure it is installed and in your PATH. You may download GPG from https://www.gnupg.org/download/ ")
 		os.Exit(3)
 	}
 
