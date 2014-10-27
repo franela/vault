@@ -42,9 +42,7 @@ You can find Vault for your favorite distrution below:
 </p>
 
 
-
-
-Or you can download the source and compile it yourself here.
+More distributions and source code can be found [here](https://github.com/franela/vault/releases)
 
 
 
