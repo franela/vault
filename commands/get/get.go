@@ -58,12 +58,12 @@ func (getCommand) Run(args []string) int {
 
 	if len(outputFile) > 0 {
 		if err := gpg.DecryptFile(outputFile, path.Join(vault.GetHomeDir(), file)); err != nil {
-			ui.Printf("Error decrypting file %s %s", file, err)
+			ui.Printf("Error decrypting file %s %s\n", file, err)
 			return 1
 		}
 	} else {
 		if text, err := gpg.Decrypt(path.Join(vault.GetHomeDir(), file)); err != nil {
-			ui.Printf("Error decrypting file %s %s", file, err)
+			ui.Printf("Error decrypting file %s %s\n", file, err)
 			return 1
 		} else {
 			ui.Printf("%s", text)

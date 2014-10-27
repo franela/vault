@@ -10,11 +10,22 @@ import (
 	"strings"
 )
 
+var logger = &logWriter{}
+
 func getGPGHomeDir() []string {
 	if len(os.Getenv("GNUPGHOME")) > 0 {
 		return []string{"--homedir", os.Getenv("GNUPGHOME")}
 	}
 	return []string{}
+}
+
+type logWriter struct {
+}
+
+func (*logWriter) Write(input []byte) (n int, err error) {
+	log.Printf("%s", input)
+	return len(input), nil
+
 }
 
 func Decrypt(filePath string) (string, error) {
@@ -23,7 +34,7 @@ func Decrypt(filePath string) (string, error) {
 	log.Printf("Running: gpg %s\n", strings.Join(decryptArgs, " "))
 	cmd := exec.Command("gpg", decryptArgs...)
 	cmd.Env = nil
-	cmd.Stderr = os.Stderr
+	cmd.Stderr = logger
 	out, err := cmd.Output()
 
 	if err != nil {
@@ -40,7 +51,7 @@ func DecryptFile(outputFile, filePath string) error {
 	log.Printf("Running: gpg %s\n", strings.Join(decryptArgs, " "))
 	cmd := exec.Command("gpg", decryptArgs...)
 	cmd.Env = nil
-	cmd.Stderr = os.Stderr
+	cmd.Stderr = logger
 
 	_, err := cmd.Output()
 
@@ -66,7 +77,7 @@ func Encrypt(filePath string, text string, recipients []string) error {
 	log.Printf("Running: gpg %s\n", strings.Join(encryptArgs, " "))
 	cmd := exec.Command("gpg", encryptArgs...)
 	cmd.Env = nil
-	cmd.Stderr = os.Stderr
+	cmd.Stderr = logger
 	cmd.Stdin = strings.NewReader(text)
 	_, err := cmd.Output()
 
@@ -94,7 +105,7 @@ func EncryptFile(filePath string, sourceFile string, recipients []string) error 
 	log.Printf("Running: gpg %s\n", strings.Join(encryptArgs, " "))
 	cmd := exec.Command("gpg", encryptArgs...)
 	cmd.Env = nil
-	cmd.Stderr = os.Stderr
+	cmd.Stderr = logger
 	_, err := cmd.Output()
 
 	if err != nil {
@@ -130,9 +141,9 @@ func ReEncryptFile(src, dst string, recipients []string) error {
 	r, w := io.Pipe()
 	bufferedStdout := bufio.NewWriterSize(w, int(stat.Size()))
 	decryptCmd.Stdout = bufferedStdout
-	decryptCmd.Stderr = os.Stderr
+	decryptCmd.Stderr = logger
 
-	encryptCmd.Stderr = os.Stderr
+	encryptCmd.Stderr = logger
 	encryptCmd.Stdin = r
 
 	log.Printf("Running: gpg %s | gpg %s\n", strings.Join(decryptArgs, " "), strings.Join(encryptArgs, " "))
