@@ -8,6 +8,7 @@ import (
 	"os/exec"
 
 	add "github.com/franela/vault/commands/add"
+	cmdimport "github.com/franela/vault/commands/cmdimport"
 	get "github.com/franela/vault/commands/get"
 	inita "github.com/franela/vault/commands/init"
 	recipients "github.com/franela/vault/commands/recipients"
@@ -66,6 +67,7 @@ func initializeCli(args []string) *cli.CLI {
 		"add":        add.Factory,
 		"remove":     remove.Factory,
 		"repair":     repair.Factory,
+		"import":     cmdimport.Factory,
 	}
 
 	return c
