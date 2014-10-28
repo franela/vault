@@ -30,7 +30,6 @@ func TestImport(t *testing.T) {
 				defer func() {
 					gpg.DeleteKey(vault.VaultRecipient{Fingerprint: "3B6094CF22AEC3F24274F389F8987FE0142E59FA", Name: "marcos@example.com"})
 				}()
-
 				v := vault.Vaultfile{}
 				v.Recipients = []vault.VaultRecipient{
 					vault.VaultRecipient{Fingerprint: "2B13EC3B5769013E2ED29AC9643E01FBCE44E394", Name: "bob@example.com"},

@@ -68,7 +68,7 @@ func Encrypt(filePath string, text string, recipients []vault.VaultRecipient) er
 		return err
 	}
 
-	encryptArgs := append(getGPGHomeDir(), "--encrypt", "--trust-model", "always", "--armor", "--batch", "--yes", "--output", filePath)
+	encryptArgs := append(getGPGHomeDir(), "--encrypt", "--armor", "--batch", "--yes", "--output", filePath)
 
 	for _, recipient := range recipients {
 		encryptArgs = append(encryptArgs, "--recipient")
@@ -94,7 +94,7 @@ func EncryptFile(filePath string, sourceFile string, recipients []vault.VaultRec
 		return err
 	}
 
-	encryptArgs := append(getGPGHomeDir(), "--encrypt", "--trust-model", "always", "--armor", "--batch", "--yes", "--output", filePath)
+	encryptArgs := append(getGPGHomeDir(), "--encrypt", "--armor", "--batch", "--yes", "--output", filePath)
 
 	for _, recipient := range recipients {
 		encryptArgs = append(encryptArgs, "--recipient")
@@ -117,7 +117,7 @@ func EncryptFile(filePath string, sourceFile string, recipients []vault.VaultRec
 
 func ReEncryptFile(src, dst string, recipients []vault.VaultRecipient) error {
 	decryptArgs := append(getGPGHomeDir(), "--decrypt", "--armor", "--batch", "--yes", src)
-	encryptArgs := append(getGPGHomeDir(), "--encrypt", "--trust-model", "always", "--armor", "--batch", "--yes", "--output", dst)
+	encryptArgs := append(getGPGHomeDir(), "--encrypt", "--armor", "--batch", "--yes", "--output", dst)
 
 	for _, recipient := range recipients {
 		encryptArgs = append(encryptArgs, "--recipient")
