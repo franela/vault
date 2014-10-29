@@ -7,6 +7,8 @@ import (
 	"github.com/franela/vault/ui"
 	"github.com/franela/vault/vault"
 	"github.com/franela/vault/vault/testutils"
+	"os"
+	"strings"
 	"testing"
 )
 
@@ -15,6 +17,8 @@ func TestImport(t *testing.T) {
 
 	g.Describe("Import", func() {
 		g.BeforeEach(func() {
+			//I need to do this because first test will set it
+			os.Setenv("GNUPGHOME", "")
 			vault.SetHomeDir(testutils.GetTemporaryHomeDir())
 			ui.DEBUG = true
 		})
@@ -52,6 +56,25 @@ func TestImport(t *testing.T) {
 
 				g.Assert(code).Equal(0)
 			})
+			g.It("Should allow to specify a keyserver", func() {
+				v := vault.Vaultfile{}
+				v.Recipients = []vault.VaultRecipient{
+					vault.VaultRecipient{Fingerprint: "2B13EC3B5769013E2ED29AC9643E01FBCE44E394", Name: "bob@example.com"},
+					vault.VaultRecipient{Fingerprint: "3B6094CF22AEC3F24274F389F8987FE0142E59FA", Name: "marcos@example.com"},
+				}
+				v.Save()
+
+				c, _ := Factory()
+
+				mockExecutor := &testutils.MockCMDExecutor{}
+				gpg.SetExecutor(mockExecutor)
+
+				code := c.Run([]string{"--keyserver", "hkp://test.keyserver.com"})
+
+				g.Assert(code).Equal(0)
+				g.Assert("gpg --batch --yes --keyserver hkp://test.keyserver.com --recv-keys 2B13EC3B5769013E2ED29AC9643E01FBCE44E394 3B6094CF22AEC3F24274F389F8987FE0142E59FA").Equal(strings.Join(mockExecutor.Arguments, " "))
+			})
+			g.It("Should thorw an error if keyserver format is invalid")
 		})
 	})
 }
