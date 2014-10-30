@@ -26,33 +26,41 @@ func TestRemove(t *testing.T) {
 		g.Describe("#Run", func() {
 			g.It("Should not fail if recipient doesn't exist", func() {
 				v := vault.Vaultfile{}
-				v.Recipients = []string{"bob@example.com"}
+				v.Recipients = []vault.VaultRecipient{
+					vault.VaultRecipient{Fingerprint: "2B13EC3B5769013E2ED29AC9643E01FBCE44E394", Name: "bob@example.com"},
+				}
 				v.Save()
 
 				c, _ := Factory()
 
-				code := c.Run([]string{"alice@example.com"})
+				code := c.Run([]string{"39A595E45C6C23693074BDA2A74BFF324DC55DBE"})
 
 				g.Assert(code).Equal(0)
 			})
 
 			g.It("Should allow removal of multiple recipients", func() {
 				v := vault.Vaultfile{}
-				v.Recipients = []string{"bob@example.com", "alice@example.com"}
+				v.Recipients = []vault.VaultRecipient{
+					vault.VaultRecipient{Fingerprint: "2B13EC3B5769013E2ED29AC9643E01FBCE44E394", Name: "bob@example.com"},
+					vault.VaultRecipient{Fingerprint: "39A595E45C6C23693074BDA2A74BFF324DC55DBE", Name: "alice@example.com"},
+				}
 				v.Save()
 
 				c, _ := Factory()
 
-				code := c.Run([]string{"alice@example.com", "bob@example.com"})
+				code := c.Run([]string{"2B13EC3B5769013E2ED29AC9643E01FBCE44E394", "39A595E45C6C23693074BDA2A74BFF324DC55DBE"})
 
 				g.Assert(code).Equal(0)
 				newVaultfile, _ := vault.LoadVaultfile()
-				g.Assert(newVaultfile.Recipients).Equal([]string{})
+				g.Assert(newVaultfile.Recipients).Equal([]vault.VaultRecipient{})
 			})
 
 			g.It("Should remove recipients", func() {
 				v := vault.Vaultfile{}
-				v.Recipients = []string{"bob@example.com", "alice@example.com"}
+				v.Recipients = []vault.VaultRecipient{
+					vault.VaultRecipient{Fingerprint: "2B13EC3B5769013E2ED29AC9643E01FBCE44E394", Name: "bob@example.com"},
+					vault.VaultRecipient{Fingerprint: "39A595E45C6C23693074BDA2A74BFF324DC55DBE", Name: "alice@example.com"},
+				}
 				v.Save()
 
 				c, _ := Factory()
@@ -61,10 +69,10 @@ func TestRemove(t *testing.T) {
 				removeCmd, _ := c.(removeCommand)
 				removeCmd.Repair = &repairCommand
 
-				code := removeCmd.Run([]string{"alice@example.com"})
+				code := removeCmd.Run([]string{"39A595E45C6C23693074BDA2A74BFF324DC55DBE"})
 
 				newVaultfile, _ := vault.LoadVaultfile()
-				g.Assert(newVaultfile.Recipients).Equal([]string{"bob@example.com"})
+				g.Assert(newVaultfile.Recipients).Equal([]vault.VaultRecipient{vault.VaultRecipient{Fingerprint: "2B13EC3B5769013E2ED29AC9643E01FBCE44E394", Name: "bob@example.com"}})
 				g.Assert(repairCommand.RunCalled).IsTrue()
 				g.Assert(code).Equal(0)
 			})

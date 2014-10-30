@@ -6,7 +6,6 @@ import (
 	"github.com/franela/vault/vault"
 	"github.com/mitchellh/cli"
 	"log"
-	"strings"
 )
 
 const addHelpText = `
@@ -48,10 +47,23 @@ func (self addCommand) Run(args []string) int {
 		return 1
 	} else {
 		for _, recipient := range args {
-			if !strings.Contains(strings.Join(vaultFile.Recipients, " "), recipient) {
-				log.Printf("Adding [%s] to Vaultfile\n", recipient)
-				vaultFile.Recipients = append(vaultFile.Recipients, strings.TrimSpace(recipient))
+			foundRecipientInVault := false
+			r, err := vault.NewRecipient(recipient)
+			if err != nil {
+				return 1
 			}
+
+			for _, vaultRecipient := range vaultFile.Recipients {
+				if vaultRecipient.Fingerprint == r.Fingerprint {
+					foundRecipientInVault = true
+				}
+
+			}
+			if !foundRecipientInVault {
+				log.Printf("Adding [%s] to Vaultfile\n", recipient)
+				vaultFile.Recipients = append(vaultFile.Recipients, *r)
+			}
+
 		}
 		if err := vaultFile.Save(); err != nil {
 			ui.Printf("Error saving Vaultfile: %s", err)

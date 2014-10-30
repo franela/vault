@@ -28,3 +28,4 @@ testdata/bob/random_seed
 testdata/alice/random_seed
 stderr
 build/
+testdata/bob/pubring.gpg~

@@ -2,6 +2,8 @@ package gpg
 
 import (
 	"bufio"
+	"github.com/franela/vault/executor"
+	"github.com/franela/vault/vault"
 	"io"
 	"log"
 	"os"
@@ -11,6 +13,13 @@ import (
 )
 
 var logger = &logWriter{}
+
+var cmdExec executor.Executor
+
+func init() {
+	cmdExec = &executor.CMDExecutor{}
+
+}
 
 func getGPGHomeDir() []string {
 	if len(os.Getenv("GNUPGHOME")) > 0 {
@@ -31,11 +40,11 @@ func (*logWriter) Write(input []byte) (n int, err error) {
 func Decrypt(filePath string) (string, error) {
 	decryptArgs := append(getGPGHomeDir(), "--decrypt", "--armor", "--batch", "--yes", filePath)
 
-	log.Printf("Running: gpg %s\n", strings.Join(decryptArgs, " "))
 	cmd := exec.Command("gpg", decryptArgs...)
 	cmd.Env = nil
 	cmd.Stderr = logger
-	out, err := cmd.Output()
+
+	out, err := cmdExec.Output(cmd)
 
 	if err != nil {
 		return "", err
@@ -48,12 +57,11 @@ func DecryptFile(outputFile, filePath string) error {
 
 	decryptArgs := append(getGPGHomeDir(), "--decrypt", "--armor", "--batch", "--yes", "--output", outputFile, filePath)
 
-	log.Printf("Running: gpg %s\n", strings.Join(decryptArgs, " "))
 	cmd := exec.Command("gpg", decryptArgs...)
 	cmd.Env = nil
 	cmd.Stderr = logger
 
-	_, err := cmd.Output()
+	_, err := cmdExec.Output(cmd)
 
 	if err != nil {
 		return err
@@ -62,7 +70,7 @@ func DecryptFile(outputFile, filePath string) error {
 	return nil
 }
 
-func Encrypt(filePath string, text string, recipients []string) error {
+func Encrypt(filePath string, text string, recipients []vault.VaultRecipient) error {
 	if err := os.MkdirAll(path.Dir(filePath), 0777); err != nil {
 		return err
 	}
@@ -71,7 +79,7 @@ func Encrypt(filePath string, text string, recipients []string) error {
 
 	for _, recipient := range recipients {
 		encryptArgs = append(encryptArgs, "--recipient")
-		encryptArgs = append(encryptArgs, recipient)
+		encryptArgs = append(encryptArgs, recipient.Fingerprint)
 	}
 
 	log.Printf("Running: gpg %s\n", strings.Join(encryptArgs, " "))
@@ -79,7 +87,7 @@ func Encrypt(filePath string, text string, recipients []string) error {
 	cmd.Env = nil
 	cmd.Stderr = logger
 	cmd.Stdin = strings.NewReader(text)
-	_, err := cmd.Output()
+	_, err := cmdExec.Output(cmd)
 
 	if err != nil {
 		return err
@@ -87,7 +95,7 @@ func Encrypt(filePath string, text string, recipients []string) error {
 	return nil
 }
 
-func EncryptFile(filePath string, sourceFile string, recipients []string) error {
+func EncryptFile(filePath string, sourceFile string, recipients []vault.VaultRecipient) error {
 
 	if err := os.MkdirAll(path.Dir(filePath), 0777); err != nil {
 		return err
@@ -97,16 +105,15 @@ func EncryptFile(filePath string, sourceFile string, recipients []string) error 
 
 	for _, recipient := range recipients {
 		encryptArgs = append(encryptArgs, "--recipient")
-		encryptArgs = append(encryptArgs, recipient)
+		encryptArgs = append(encryptArgs, recipient.Fingerprint)
 	}
 
 	encryptArgs = append(encryptArgs, sourceFile)
 
-	log.Printf("Running: gpg %s\n", strings.Join(encryptArgs, " "))
 	cmd := exec.Command("gpg", encryptArgs...)
 	cmd.Env = nil
 	cmd.Stderr = logger
-	_, err := cmd.Output()
+	_, err := cmdExec.Output(cmd)
 
 	if err != nil {
 		return err
@@ -114,13 +121,13 @@ func EncryptFile(filePath string, sourceFile string, recipients []string) error 
 	return nil
 }
 
-func ReEncryptFile(src, dst string, recipients []string) error {
+func ReEncryptFile(src, dst string, recipients []vault.VaultRecipient) error {
 	decryptArgs := append(getGPGHomeDir(), "--decrypt", "--armor", "--batch", "--yes", src)
 	encryptArgs := append(getGPGHomeDir(), "--encrypt", "--armor", "--batch", "--yes", "--output", dst)
 
 	for _, recipient := range recipients {
 		encryptArgs = append(encryptArgs, "--recipient")
-		encryptArgs = append(encryptArgs, recipient)
+		encryptArgs = append(encryptArgs, recipient.Fingerprint)
 	}
 
 	decryptCmd := exec.Command("gpg", decryptArgs...)
@@ -146,17 +153,58 @@ func ReEncryptFile(src, dst string, recipients []string) error {
 	encryptCmd.Stderr = logger
 	encryptCmd.Stdin = r
 
-	log.Printf("Running: gpg %s | gpg %s\n", strings.Join(decryptArgs, " "), strings.Join(encryptArgs, " "))
-	err1 := decryptCmd.Run()
+	err1 := cmdExec.Run(decryptCmd)
 	if err1 != nil {
 		return err1
 	}
 	w.Close()
 
-	err2 := encryptCmd.Run()
+	err2 := cmdExec.Run(encryptCmd)
 	if err2 != nil {
 		return err2
 	}
 
 	return nil
+}
+
+func ReceiveKey(recipients []vault.VaultRecipient) error {
+	recvArgs := append(getGPGHomeDir(), "--batch", "--yes", "--recv-keys")
+
+	for _, recipient := range recipients {
+		recvArgs = append(recvArgs, recipient.Fingerprint)
+	}
+
+	recvCmd := exec.Command("gpg", recvArgs...)
+	recvCmd.Env = nil
+	recvCmd.Stderr = logger
+
+	return cmdExec.Run(recvCmd)
+}
+
+func ReceiveKeyFromKeyserver(recipients []vault.VaultRecipient, keyserver string) error {
+	recvArgs := append(getGPGHomeDir(), "--batch", "--yes", "--keyserver", keyserver, "--recv-keys")
+
+	for _, recipient := range recipients {
+		recvArgs = append(recvArgs, recipient.Fingerprint)
+	}
+
+	recvCmd := exec.Command("gpg", recvArgs...)
+	recvCmd.Env = nil
+	recvCmd.Stderr = logger
+
+	return cmdExec.Run(recvCmd)
+}
+
+func DeleteKey(recipient vault.VaultRecipient) error {
+	recvArgs := append(getGPGHomeDir(), "--batch", "--yes", "--delete-key", recipient.Fingerprint)
+
+	recvCmd := exec.Command("gpg", recvArgs...)
+	recvCmd.Env = nil
+	recvCmd.Stderr = logger
+	return cmdExec.Run(recvCmd)
+
+}
+
+func SetExecutor(executor executor.Executor) {
+	cmdExec = executor
 }

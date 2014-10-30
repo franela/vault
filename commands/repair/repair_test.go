@@ -28,7 +28,9 @@ func TestRepair(t *testing.T) {
 				testutils.SetTestGPGHome("bob")
 
 				v := &vault.Vaultfile{}
-				v.Recipients = []string{"bob@example.com"}
+				v.Recipients = []vault.VaultRecipient{
+					vault.VaultRecipient{Fingerprint: "2B13EC3B5769013E2ED29AC9643E01FBCE44E394", Name: "bob@example.com"},
+				}
 				v.Save()
 
 				encryptedFilePath := path.Join(vault.GetHomeDir(), "repair_test.asc")
@@ -37,7 +39,7 @@ func TestRepair(t *testing.T) {
 				encryptedFilePath2 := path.Join(vault.GetHomeDir(), "foo", "repair_test2.asc")
 				gpg.Encrypt(encryptedFilePath2, "This is a test", v.Recipients)
 
-				v.Recipients = append(v.Recipients, "alice@example.com")
+				v.Recipients = append(v.Recipients, vault.VaultRecipient{Fingerprint: "39A595E45C6C23693074BDA2A74BFF324DC55DBE", Name: "alice@example.com"})
 				v.Save()
 				c, _ := Factory()
 				c.Run([]string{})
@@ -65,13 +67,15 @@ func TestRepair(t *testing.T) {
 				testutils.SetTestGPGHome("bob")
 
 				v := &vault.Vaultfile{}
-				v.Recipients = []string{"bob@example.com"}
+				v.Recipients = []vault.VaultRecipient{
+					vault.VaultRecipient{Fingerprint: "2B13EC3B5769013E2ED29AC9643E01FBCE44E394", Name: "bob@example.com"},
+				}
 				v.Save()
 
 				notEncryptedFile := path.Join(vault.GetHomeDir(), "repair_test")
 				ioutil.WriteFile(notEncryptedFile, []byte("NOT ENCRYPTED"), 0600)
 
-				v.Recipients = append(v.Recipients, "alice@example.com")
+				v.Recipients = append(v.Recipients, vault.VaultRecipient{Fingerprint: "39A595E45C6C23693074BDA2A74BFF324DC55DBE", Name: "alice@example.com"})
 				v.Save()
 				c, _ := Factory()
 				c.Run([]string{})
