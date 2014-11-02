@@ -205,6 +205,22 @@ func DeleteKey(recipient vault.VaultRecipient) error {
 
 }
 
+func GetSecretKeysCount() (int, error) {
+	recvArgs := append(getGPGHomeDir(), "--list-secret-keys", "--with-colons")
+
+	recvCmd := exec.Command("gpg", recvArgs...)
+	recvCmd.Env = nil
+	recvCmd.Stderr = logger
+	output, err := cmdExec.Output(recvCmd)
+
+	if err != nil {
+		return 0, err
+	}
+
+	return strings.Count(output, "\n"), nil
+
+}
+
 func SetExecutor(executor executor.Executor) {
 	cmdExec = executor
 }

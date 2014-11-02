@@ -13,21 +13,21 @@ func NewRecipient(recipient string) (*VaultRecipient, error) {
 	args := strings.Split(recipient, ":")
 
 	if len(args) != 2 {
-		return nil, fmt.Errorf("Invalid format %s\n recipient should be in the form of fingerprint:name", recipient)
+		return nil, fmt.Errorf("\nInvalid format \"%s\"\nRecipient should be in the form of fingerprint:name\n", recipient)
 	}
 
 	if len(args[0]) == 0 || len(args[1]) == 0 {
-		return nil, fmt.Errorf("Invalid format %s\n recipient should be in the form of fingerprint:name", recipient)
+		return nil, fmt.Errorf("\nInvalid format \"%s\"\nRecipient should be in the form of fingerprint:name\n", recipient)
 	}
 
 	recipientFingerprint := strings.Split(recipient, ":")[0]
 
 	if hexFingerprint, err := hex.DecodeString(recipientFingerprint); err != nil {
-		return nil, fmt.Errorf("Supplied fingerprint %s does not have the correct format", hexFingerprint)
+		return nil, fmt.Errorf("\nSupplied fingerprint \"%s\" does not have the correct format\n", hexFingerprint)
 	} else {
 
 		if len(hexFingerprint) != 16 && len(hexFingerprint) != 20 {
-			return nil, fmt.Errorf("Supplied fingerprint %s does not have the correct size", hexFingerprint)
+			return nil, fmt.Errorf("\nSupplied fingerprint \"%s\" does not have the correct size\n", hexFingerprint)
 		}
 
 	}
@@ -44,7 +44,7 @@ func LoadVaultfile() (*Vaultfile, error) {
 		return v, nil
 	}
 	if err := json.Unmarshal(content, v); err != nil {
-		return nil, fmt.Errorf("Couldn't read Vaultfile.")
+		return nil, fmt.Errorf("\nCouldn't read Vaultfile.\n")
 	} else {
 		return v, nil
 	}

@@ -2,6 +2,7 @@ package main
 
 import (
 	. "github.com/franela/goblin"
+	"github.com/franela/vault/vault"
 	"github.com/franela/vault/vault/testutils"
 	"io/ioutil"
 	"log"
@@ -70,6 +71,19 @@ func TestMain(t *testing.T) {
 				fileContent, _ := ioutil.ReadAll(logFile)
 
 				g.Assert(len(fileContent)).Equal(25)
+			})
+
+			g.It("Should run validator if command returns with an error", func() {
+				testutils.SetTestGPGHome("nokey")
+				vault.SetHomeDir(testutils.GetTemporaryHomeDir())
+
+				mockValidator := &testutils.MockValidator{}
+				commandValidator = mockValidator
+
+				runCommand(initializeCli([]string{"set"}))
+
+				g.Assert(mockValidator.CalledValidate).IsTrue()
+
 			})
 		})
 	})

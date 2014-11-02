@@ -53,6 +53,7 @@ func (self addCommand) Run(args []string) int {
 			foundRecipientInVault := false
 			r, err := vault.NewRecipient(recipient)
 			if err != nil {
+				ui.Printf("%s", err)
 				return 1
 			}
 

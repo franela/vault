@@ -15,7 +15,14 @@ import (
 	remove "github.com/franela/vault/commands/remove"
 	repair "github.com/franela/vault/commands/repair"
 	set "github.com/franela/vault/commands/set"
+	"github.com/franela/vault/validator"
 )
+
+var commandValidator validator.Validator
+
+func init() {
+	commandValidator = &validator.CommandValidator{}
+}
 
 func main() {
 
@@ -25,7 +32,9 @@ func main() {
 	}
 
 	c := initializeCli(os.Args[1:])
-	exitStatus, err := c.Run()
+
+	exitStatus, err := runCommand(c)
+
 	if err != nil {
 		log.Println(err)
 	}
@@ -41,6 +50,17 @@ func isGPGInstalled() bool {
 	}
 
 	return true
+}
+
+func runCommand(cli *cli.CLI) (int, error) {
+
+	exitStatus, err := cli.Run()
+
+	if exitStatus != 0 {
+		commandValidator.Validate()
+	}
+
+	return exitStatus, err
 }
 
 func initializeCli(args []string) *cli.CLI {
