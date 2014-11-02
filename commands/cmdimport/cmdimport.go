@@ -13,6 +13,10 @@ Usage: vault import
 
   Imports all recipients from the Vaultfile by fingerprint.
 
+Options: 
+    
+    --keyserver	Keyserver to import recipients from
+
 `
 
 type importCommand struct {

@@ -9,10 +9,13 @@ import (
 )
 
 const addHelpText = `
-Usage: vault add recipients...
+Usage: vault add fingerprint:name...
 
   Add specified recipients to the vault and re-encrypts all your
-  vault files. If specified recipients already exist, vault will ignore them.
+  vault files. Recipient information must be entered in the form of fingerprint:name
+  where name can be any arbitrary name you decide.
+  
+  If specified recipients already exist, vault will ignore them.
   Spaced delimited list of recipients is allowed (ex: bob@example.com alice@example.com) 
 
 `
