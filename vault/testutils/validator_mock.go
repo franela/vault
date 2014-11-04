@@ -1,9 +1,7 @@
 package testutils
 
 type MockValidator struct {
-	CalledValidate bool
+	ValidateMock func()
 }
 
-func (mv *MockValidator) Validate() {
-	mv.CalledValidate = true
-}
+func (m *MockValidator) Validate() { m.ValidateMock() }

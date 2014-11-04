@@ -1,15 +1,16 @@
 package main
 
 import (
-	. "github.com/franela/goblin"
-	"github.com/franela/vault/vault"
-	"github.com/franela/vault/vault/testutils"
 	"io/ioutil"
 	"log"
 	"os"
 	"path"
 	"syscall"
 	"testing"
+
+	. "github.com/franela/goblin"
+	"github.com/franela/vault/vault"
+	"github.com/franela/vault/vault/testutils"
 )
 
 func TestMain(t *testing.T) {
@@ -77,12 +78,16 @@ func TestMain(t *testing.T) {
 				testutils.SetTestGPGHome("nokey")
 				vault.SetHomeDir(testutils.GetTemporaryHomeDir())
 
-				mockValidator := &testutils.MockValidator{}
+				called := false
+
+				mockValidator := &testutils.MockValidator{
+					ValidateMock: func() { called = true },
+				}
 				commandValidator = mockValidator
 
 				runCommand(initializeCli([]string{"set"}))
 
-				g.Assert(mockValidator.CalledValidate).IsTrue()
+				g.Assert(called).IsTrue()
 
 			})
 		})
