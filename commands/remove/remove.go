@@ -2,6 +2,7 @@ package remove
 
 import (
 	"fmt"
+
 	"github.com/franela/vault/commands/repair"
 	"github.com/franela/vault/ui"
 	"github.com/franela/vault/vault"
@@ -9,7 +10,7 @@ import (
 )
 
 const removeHelpText = `
-Usage: vault remove recipients...
+Usage: vault remove recipients-fingerprint...
 
     Remove specified recipients from the vaultfile. If
     specified recipient doesn't exist, vault will ignore it
