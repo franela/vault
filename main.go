@@ -2,10 +2,11 @@ package main
 
 import (
 	"flag"
-	"github.com/mitchellh/cli"
 	"log"
 	"os"
 	"os/exec"
+
+	"github.com/mitchellh/cli"
 
 	add "github.com/franela/vault/commands/add"
 	cmdimport "github.com/franela/vault/commands/cmdimport"
