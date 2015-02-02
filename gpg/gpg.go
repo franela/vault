@@ -2,14 +2,15 @@ package gpg
 
 import (
 	"bufio"
-	"github.com/franela/vault/executor"
-	"github.com/franela/vault/vault"
 	"io"
 	"log"
 	"os"
 	"os/exec"
 	"path"
 	"strings"
+
+	"github.com/franela/vault/executor"
+	"github.com/franela/vault/vault"
 )
 
 var logger = &logWriter{}

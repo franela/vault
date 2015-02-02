@@ -1,14 +1,15 @@
 package repair
 
 import (
-	"github.com/franela/vault/gpg"
-	"github.com/franela/vault/ui"
-	"github.com/franela/vault/vault"
-	"github.com/mitchellh/cli"
 	"log"
 	"os"
 	"path"
 	"path/filepath"
+
+	"github.com/franela/vault/gpg"
+	"github.com/franela/vault/ui"
+	"github.com/franela/vault/vault"
+	"github.com/mitchellh/cli"
 )
 
 const repairHelpText = `
@@ -30,7 +31,7 @@ func (repairCommand) Run(args []string) int {
 	vaultFile, err := vault.LoadVaultfile()
 
 	if err != nil {
-		ui.Printf("%s", err)
+		ui.Printf("%s\n", err)
 		return 1
 	}
 
@@ -46,11 +47,10 @@ func (repairCommand) Run(args []string) int {
 		}
 		log.Printf("Re-encrypting %s\n", filepath)
 		if err := gpg.ReEncryptFile(filepath, filepath, vaultFile.Recipients); err != nil {
-			return err
+			ui.PrintErrorf("Error trying to re-encrypt file %s\n", filepath)
 		}
 		return nil
 	}); err != nil {
-		ui.Printf("%s", err)
 		return 1
 	}
 

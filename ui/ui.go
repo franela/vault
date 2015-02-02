@@ -2,6 +2,7 @@ package ui
 
 import (
 	"fmt"
+	"os"
 )
 
 var (
@@ -20,6 +21,10 @@ func Printf(format string, a ...interface{}) (n int, err error) {
 		return fmt.Printf(format, a...)
 	}
 
+}
+
+func PrintErrorf(format string, a ...interface{}) (n int, err error) {
+	return fmt.Fprintf(os.Stderr, format, a...)
 }
 
 func GetOutput() string {
