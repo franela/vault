@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"os"
 	"path"
 	"strings"
 )
@@ -38,9 +39,21 @@ func NewRecipient(recipient string) (*VaultRecipient, error) {
 }
 
 func LoadVaultfile() (*Vaultfile, error) {
+	return loadVaultfileRecursive(GetHomeDir())
+}
+
+func loadVaultfileRecursive(currentPath string) (*Vaultfile, error) {
 	v := &Vaultfile{}
-	content, err := ioutil.ReadFile(path.Join(GetHomeDir(), "Vaultfile"))
-	if err != nil {
+	if currentPath == path.Dir(currentPath) {
+		return v, nil
+	}
+
+	content, err := ioutil.ReadFile(path.Join(currentPath, "Vaultfile"))
+
+	if os.IsNotExist(err) {
+		return loadVaultfileRecursive(path.Dir(currentPath))
+	} else if err != nil {
+		fmt.Println(err.(*os.PathError))
 		return v, nil
 	}
 	if err := json.Unmarshal(content, v); err != nil {
@@ -48,6 +61,7 @@ func LoadVaultfile() (*Vaultfile, error) {
 	} else {
 		return v, nil
 	}
+
 }
 
 type VaultRecipient struct {
