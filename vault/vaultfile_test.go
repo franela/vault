@@ -3,6 +3,7 @@ package vault
 import (
 	"encoding/json"
 	"io/ioutil"
+	"os"
 	"path"
 	"testing"
 
@@ -103,6 +104,22 @@ func TestVaultfile(t *testing.T) {
 			ioutil.WriteFile(path.Join(GetHomeDir(), "Vaultfile"), []byte("Not a JSON"), 0644)
 			_, err := LoadVaultfile()
 			g.Assert(err == nil).IsFalse()
+		})
+
+		g.It("Should traverse directories and look for a Vaultfile ", func() {
+			v := &Vaultfile{}
+			v.Recipients = []VaultRecipient{
+				VaultRecipient{Fingerprint: "3B9CEC3B5069113E2ED39AC9843E01FBCE44AAAA", Name: "a@a.com"},
+			}
+			v.Save()
+
+			os.Mkdir(path.Join(GetHomeDir(), "test"), 0777)
+			SetHomeDir(path.Join(GetHomeDir(), "test"))
+
+			v2, err := LoadVaultfile()
+
+			g.Assert(err == nil).IsTrue()
+			g.Assert(v).Equal(v2)
 		})
 	})
 }
