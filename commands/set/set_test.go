@@ -1,14 +1,15 @@
 package set
 
 import (
+	"os"
+	"path"
+	"testing"
+
 	. "github.com/franela/goblin"
 	"github.com/franela/vault/gpg"
 	"github.com/franela/vault/ui"
 	"github.com/franela/vault/vault"
 	"github.com/franela/vault/vault/testutils"
-	"os"
-	"path"
-	"testing"
 )
 
 func TestSet(t *testing.T) {
@@ -77,6 +78,27 @@ func TestSet(t *testing.T) {
 				c, _ := Factory()
 
 				c.Run([]string{"-f", path.Join(testutils.GetProjectDir(), "testdata", "set_test"), "set_test"})
+
+				_, err := os.Stat(path.Join(vault.GetHomeDir(), "set_test.asc"))
+				g.Assert(err == nil).IsTrue()
+
+				out, err := gpg.Decrypt(path.Join(vault.GetHomeDir(), "set_test.asc"))
+				g.Assert(err == nil).IsTrue()
+				g.Assert(out).Equal("This is a test")
+			})
+
+			g.It("Should set the encypted file in the current path with the same name as the file to encrypt `", func() {
+				testutils.SetTestGPGHome("bob")
+
+				v := &vault.Vaultfile{}
+				v.Recipients = []vault.VaultRecipient{
+					vault.VaultRecipient{Fingerprint: "2B13EC3B5769013E2ED29AC9643E01FBCE44E394", Name: "bob@example.com"},
+				}
+				v.Save()
+
+				c, _ := Factory()
+
+				c.Run([]string{"-f", path.Join(testutils.GetProjectDir(), "testdata", "set_test")})
 
 				_, err := os.Stat(path.Join(vault.GetHomeDir(), "set_test.asc"))
 				g.Assert(err == nil).IsTrue()

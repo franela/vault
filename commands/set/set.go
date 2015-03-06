@@ -2,14 +2,15 @@ package set
 
 import (
 	"flag"
-	"github.com/franela/vault/gpg"
-	"github.com/franela/vault/ui"
-	"github.com/franela/vault/vault"
-	"github.com/mitchellh/cli"
 	"os"
 	"path"
 	"path/filepath"
 	"strings"
+
+	"github.com/franela/vault/gpg"
+	"github.com/franela/vault/ui"
+	"github.com/franela/vault/vault"
+	"github.com/mitchellh/cli"
 )
 
 const setHelpText = `
@@ -62,9 +63,11 @@ func (setCommand) Run(args []string) int {
 
 	args = cmdFlags.Args()
 
-	if len(args) == 0 || len(args) > 2 {
+	if len(args) > 2 {
 		ui.Printf(setHelpText)
 		return 1
+	} else if len(args) == 0 && fileName != "" {
+		args = append(args, path.Base(fileName))
 	}
 
 	if len(fileName) > 0 {
