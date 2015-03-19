@@ -1,11 +1,12 @@
 package add
 
 import (
+	"log"
+
 	"github.com/franela/vault/commands/repair"
 	"github.com/franela/vault/ui"
 	"github.com/franela/vault/vault"
 	"github.com/mitchellh/cli"
-	"log"
 )
 
 const addHelpText = `
@@ -74,8 +75,6 @@ func (self addCommand) Run(args []string) int {
 			return 1
 		}
 		return self.Repair.Run([]string{})
-
-		return 0
 	}
 }
 
