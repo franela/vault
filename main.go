@@ -68,15 +68,15 @@ func initializeCli(args []string) *cli.CLI {
 	c := cli.NewCLI("vault", "0.0.1")
 	c.Args = args
 
+	devNull, _ := os.Open(os.DevNull)
+	log.SetOutput(devNull)
+
 	if !c.IsVersion() && !c.IsHelp() {
 		initFlags := flag.NewFlagSet("verbose", flag.ContinueOnError)
 		var verbose = initFlags.Bool("verbose", false, "Logs verbose information to stderr")
 		initFlags.Parse(args)
 		if *verbose {
 			log.SetOutput(os.Stderr)
-		} else {
-			devNull, _ := os.Open(os.DevNull)
-			log.SetOutput(devNull)
 		}
 	}
 
