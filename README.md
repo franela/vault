@@ -37,7 +37,7 @@ You can find Vault for your favorite distrution below:
 <p align="center">
   <a href="https://github.com/franela/vault/releases/download/0.0.1/linux.zip" ><img width="150px" height="150px" src="http://imagenes.es.sftcdn.net/blog/es/2013/09/Tux-Seguridad.png" alt="Linux"/> </a>
   <a href="https://github.com/franela/vault/releases/download/0.0.1/windows.zip" ><img width="150px" height="150px" src="http://webpamplona.com/wp-content/uploads/2014/06/windows.png" alt="Windows" /> </a>
-  <a href="https://github.com/franela/vault/releases/download/0.0.1/darwin.zip" ><img width="150px" height="150px" src="http://jvcapital.it/wp-content/uploads/2014/08/apple-finanziamenti.png" alt="MacOS" /> </a>
+  <a href="https://github.com/franela/vault/releases/download/0.0.1/darwin.zip" ><img width="150px" height="150px" src="http://www.weblinear.fr/img/glyphicons/macos-logo.jpg" alt="MacOS" /> </a>
   <a href="https://github.com/franela/vault/releases/download/0.0.1/freebsd.zip" ><img width="130px" height="130px" src="http://1.bp.blogspot.com/-mls96EYcCoA/U-sS1D6FknI/AAAAAAAATqk/BCRJYO9jR4U/s1600/freebsd.png" alt="BSD" /> </a>
   
 </p>
