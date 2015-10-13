@@ -222,6 +222,34 @@ func GetSecretKeysCount() (int, error) {
 
 }
 
+func GetKeysWithFingerprints() (map[string]bool, error) {
+	recvargs := append(getGPGHomeDir(), "--list-keys", "--with-colons", "--fingerprint")
+
+	recvcmd := exec.Command("gpg", recvargs...)
+	recvcmd.Env = nil
+	recvcmd.Stderr = logger
+	output, err := cmdExec.Output(recvcmd)
+
+	var fingerprintMap = map[string]bool{}
+
+	if err != nil {
+		return fingerprintMap, err
+	}
+
+	lines := strings.Split(output, "\n")
+
+	for index, line := range lines {
+		if strings.HasPrefix(line, "fpr") {
+			keyValidity := strings.Split(lines[index-1], ":")[1]
+			isTrusty := keyValidity == "u" || keyValidity == "f"
+			fingerprintMap[strings.Split(line, ":")[9]] = isTrusty
+		}
+	}
+
+	return fingerprintMap, nil
+
+}
+
 func SetExecutor(executor executor.Executor) {
 	cmdExec = executor
 }

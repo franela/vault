@@ -22,6 +22,7 @@ func NewRecipient(recipient string) (*VaultRecipient, error) {
 	}
 
 	recipientFingerprint := strings.Split(recipient, ":")[0]
+	recipientFingerprint = strings.Replace(recipientFingerprint, " ", "", -1)
 
 	if hexFingerprint, err := hex.DecodeString(recipientFingerprint); err != nil {
 		return nil, fmt.Errorf("\nSupplied fingerprint \"%s\" does not have the correct format\n", recipientFingerprint)

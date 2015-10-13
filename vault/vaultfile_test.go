@@ -48,6 +48,11 @@ func TestVaultfile(t *testing.T) {
 			g.Assert(recipient).Equal(&VaultRecipient{Fingerprint: "3B9CEC3B5069113E2ED39AC9843E01FBCE44AAAA", Name: "a@a.com"})
 		})
 
+		g.It("Should show allow spaced fingerprints", func() {
+			recipient, _ := NewRecipient("3B9C EC3B 5069 113E 2ED3 9AC9 843E 01FB CE44 AAAA:a@a.com")
+			g.Assert(recipient).Equal(&VaultRecipient{Fingerprint: "3B9CEC3B5069113E2ED39AC9843E01FBCE44AAAA", Name: "a@a.com"})
+		})
+
 		g.It("Should require both parameters to be present", func() {
 			_, err := NewRecipient("a@a.com")
 			g.Assert(err != nil).IsTrue()
@@ -65,7 +70,7 @@ func TestVaultfile(t *testing.T) {
 		})
 
 		g.It("Should validate that first has the correct amount of characters", func() {
-			_, err := NewRecipient("a@a.com:3B9CEC3B50691")
+			_, err := NewRecipient("3B9CEC3B50691:a@a.com")
 			g.Assert(err != nil).IsTrue()
 		})
 
