@@ -26,6 +26,9 @@ Using Vault is super easy. Below is the list of all the possible operations:
 `vault get` - Retrieves an encrypted file from your Vault and decrypts it.  
 `vault remove` - Removes specified recipients from the Vault. It will automatally keep te integrity of your Vault by upgrading encrypted recipients  
 `vault import` - Imports all the current recipients in your vault. Alternatively you can specifiy a keyserver to import from  
+`vault recipients` - Lists vault recipients and it's current status in the user keyring (missing / untrusted / trusted) i.e:  
+
+![recipients](https://cloud.githubusercontent.com/assets/1578458/10444397/5e543a6a-713c-11e5-98da-99dfd38e3b88.png)
 
 
 #This sounds cool, where do I get it?
