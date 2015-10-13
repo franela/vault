@@ -1,12 +1,13 @@
 package recipients
 
 import (
+	"strings"
+	"testing"
+
 	. "github.com/franela/goblin"
 	"github.com/franela/vault/ui"
 	"github.com/franela/vault/vault"
 	"github.com/franela/vault/vault/testutils"
-	"strings"
-	"testing"
 )
 
 func TestRecipients(t *testing.T) {
