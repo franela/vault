@@ -22,7 +22,7 @@ Using Vault is super easy. Below is the list of all the possible operations:
 
 `vault init` - Creates a new Vault in the directory you're located  
 `vault add` - Adds one or more recipients to your Vault. Vault will automatically re-encrypt all your files for the new recipient  
-`vault set` - Stores something (text or file) into your Vault and ecrypts it for all of your vault recipients  
+`vault set` - Stores something (text or file) into your Vault and encrypts it for all of your vault recipients  
 `vault get` - Retrieves an encrypted file from your Vault and decrypts it.  
 `vault remove` - Removes specified recipients from the Vault. It will automatally keep te integrity of your Vault by upgrading encrypted recipients  
 `vault import` - Imports all the current recipients in your vault. Alternatively you can specifiy a keyserver to import from  
