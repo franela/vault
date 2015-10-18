@@ -2,12 +2,13 @@ package get
 
 import (
 	"flag"
+	"path"
+	"path/filepath"
+
 	"github.com/franela/vault/gpg"
 	"github.com/franela/vault/ui"
 	"github.com/franela/vault/vault"
 	"github.com/mitchellh/cli"
-	"path"
-	"path/filepath"
 )
 
 const getHelpText = `

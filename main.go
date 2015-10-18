@@ -10,6 +10,7 @@ import (
 
 	add "github.com/franela/vault/commands/add"
 	cmdimport "github.com/franela/vault/commands/cmdimport"
+	"github.com/franela/vault/commands/edit"
 	get "github.com/franela/vault/commands/get"
 	inita "github.com/franela/vault/commands/init"
 	recipients "github.com/franela/vault/commands/recipients"
@@ -84,6 +85,7 @@ func initializeCli(args []string) *cli.CLI {
 		"init":       inita.Factory,
 		"set":        set.Factory,
 		"get":        get.Factory,
+		"edit":       edit.Factory,
 		"recipients": recipients.Factory,
 		"add":        add.Factory,
 		"remove":     remove.Factory,
