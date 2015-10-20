@@ -72,7 +72,7 @@ func DecryptFile(outputFile, filePath string) error {
 }
 
 func Encrypt(filePath string, text string, recipients []vault.VaultRecipient) error {
-	if err := os.MkdirAll(path.Dir(filePath), 0777); err != nil {
+	if err := os.MkdirAll(path.Dir(filePath), 0700); err != nil {
 		return err
 	}
 
@@ -98,7 +98,7 @@ func Encrypt(filePath string, text string, recipients []vault.VaultRecipient) er
 
 func EncryptFile(filePath string, sourceFile string, recipients []vault.VaultRecipient) error {
 
-	if err := os.MkdirAll(path.Dir(filePath), 0777); err != nil {
+	if err := os.MkdirAll(path.Dir(filePath), 0700); err != nil {
 		return err
 	}
 
