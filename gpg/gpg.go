@@ -2,6 +2,7 @@ package gpg
 
 import (
 	"bufio"
+	"errors"
 	"io"
 	"log"
 	"os"
@@ -247,6 +248,33 @@ func GetKeysWithFingerprints() (map[string]bool, error) {
 	}
 
 	return fingerprintMap, nil
+
+}
+
+func GetKeyringOwnerRecipient() (*vault.VaultRecipient, error) {
+	recvargs := append(getGPGHomeDir(), "--list-secret-keys", "--with-colons", "--fingerprint")
+
+	recvcmd := exec.Command("gpg", recvargs...)
+	recvcmd.Env = nil
+	recvcmd.Stderr = logger
+	output, err := cmdExec.Output(recvcmd)
+
+	if err != nil {
+		return nil, err
+	}
+
+	lines := strings.Split(output, "\n")
+
+	if len(lines) < 2 {
+		return nil, errors.New("Keyring owner not found")
+	}
+
+	recipient := &vault.VaultRecipient{}
+
+	recipient.Name = strings.Split(lines[0], ":")[9]
+	recipient.Fingerprint = strings.Split(lines[1], ":")[9]
+
+	return recipient, nil
 
 }
 
