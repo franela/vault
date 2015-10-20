@@ -1,6 +1,9 @@
 package init
 
 import (
+	"flag"
+
+	"github.com/franela/vault/gpg"
 	"github.com/franela/vault/ui"
 	"github.com/franela/vault/vault"
 	"github.com/mitchellh/cli"
@@ -27,6 +30,17 @@ func (initCommand) Help() string {
 }
 
 func (initCommand) Run(args []string) int {
+
+	cmdFlags := flag.NewFlagSet("init", flag.ContinueOnError)
+	var omitSelf bool
+
+	cmdFlags.BoolVar(&omitSelf, "omit-self", false, "Don't add keyring owner to vaultfile")
+
+	if err := cmdFlags.Parse(args); err != nil {
+		ui.Printf(initHelpText)
+		return 1
+	}
+
 	v := vault.Vaultfile{}
 
 	for _, r := range args {
@@ -34,6 +48,15 @@ func (initCommand) Run(args []string) int {
 			v.Recipients = append(v.Recipients, *recipient)
 		}
 	}
+
+	if !omitSelf {
+		if ownerRecipient, err := gpg.GetKeyringOwnerRecipient(); err != nil {
+			ui.Printf("WARN: %s", err)
+		} else {
+			v.Recipients = append(v.Recipients, *ownerRecipient)
+		}
+	}
+
 	err := v.Save()
 
 	if err != nil {
