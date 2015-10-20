@@ -50,7 +50,7 @@ More distributions and source code can be found [here](https://github.com/franel
 
 ##Installing
 
-You need sure the copy the correct binary into your PATH and to have [GPG](https://www.gnupg.org/download/) installed.
+Download the correct binary for your distribution (clck images above) into your PATH and check that [GPG](https://www.gnupg.org/download/) installed.
 
 
 #Contributing
