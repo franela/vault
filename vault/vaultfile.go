@@ -79,7 +79,7 @@ type Vaultfile struct {
 }
 
 func (v Vaultfile) Save() error {
-	js, err := json.Marshal(v)
+	js, err := json.MarshalIndent(v, "", "  ")
 	if err != nil {
 		return err
 	}
