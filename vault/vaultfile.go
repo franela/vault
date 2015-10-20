@@ -29,7 +29,7 @@ func NewRecipient(recipient string) (*VaultRecipient, error) {
 	} else {
 
 		if len(hexFingerprint) != 16 && len(hexFingerprint) != 20 {
-			return nil, fmt.Errorf("\nSupplied fingerprint \"%s\" does not have the correct size\n", hexFingerprint)
+			return nil, fmt.Errorf("\nSupplied fingerprint \"%s\" does not have the correct size\n", recipientFingerprint)
 		}
 
 	}
