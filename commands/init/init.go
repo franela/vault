@@ -10,11 +10,15 @@ import (
 )
 
 const initHelpText = `
-Usage: vault init RECIPIENT [RECIPIENT ...]
+Usage: vault init [options] RECIPIENT [RECIPIENT ...]
 
 Initializes the vault with a space separated list of recipients.
 Each recipient identifies someone who can read and write items
 in the vault.
+
+Options: 
+    
+    --omit-self	Omits keyring owner in Vaultfile when initializing a new vault
 
 `
 
