@@ -1,7 +1,9 @@
 package edit
 
 import (
+	"io/ioutil"
 	"path"
+	"strings"
 
 	"github.com/franela/vault/gpg"
 	"github.com/franela/vault/ui"
@@ -52,11 +54,12 @@ func (self editCommand) Run(args []string) int {
 		ui.Printf("Error decrypting file %s %s\n", file, err)
 		return 1
 	} else {
-		if output, err := govipe.Edit([]byte(text)); err != nil {
+		if output, err := govipe.Vipe(strings.NewReader(text)); err != nil {
 			ui.Printf("Error editing file %s %s\n", file, err)
 			return 1
 		} else {
-			err := gpg.Encrypt(path.Join(vault.GetHomeDir(), file), string(output), vaultFile.Recipients)
+			b, _ := ioutil.ReadAll(output)
+			err := gpg.Encrypt(path.Join(vault.GetHomeDir(), file), string(b), vaultFile.Recipients)
 			if err != nil {
 				ui.Printf("%s", err)
 				return 1
