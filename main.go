@@ -71,15 +71,6 @@ func initializeCli(args []string) *cli.CLI {
 	devNull, _ := os.Open(os.DevNull)
 	log.SetOutput(devNull)
 
-	if !c.IsVersion() && !c.IsHelp() {
-		initFlags := flag.NewFlagSet("verbose", flag.ContinueOnError)
-		var verbose = initFlags.Bool("verbose", false, "Logs verbose information to stderr")
-		initFlags.Parse(args)
-		if *verbose {
-			log.SetOutput(os.Stderr)
-		}
-	}
-
 	c.Commands = map[string]cli.CommandFactory{
 		"init":       inita.Factory,
 		"set":        set.Factory,
@@ -89,6 +80,15 @@ func initializeCli(args []string) *cli.CLI {
 		"remove":     remove.Factory,
 		"repair":     repair.Factory,
 		"import":     cmdimport.Factory,
+	}
+
+	if !c.IsVersion() && !c.IsHelp() {
+		initFlags := flag.NewFlagSet("verbose", flag.ContinueOnError)
+		var verbose = initFlags.Bool("verbose", false, "Logs verbose information to stderr")
+		initFlags.Parse(args)
+		if *verbose {
+			log.SetOutput(os.Stderr)
+		}
 	}
 
 	return c
