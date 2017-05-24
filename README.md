@@ -2,13 +2,13 @@ VAULT  [![Build Status](https://travis-ci.org/franela/vault.svg?branch=master)](
 =====
 
 
-#What is Vault?
+# What is Vault?
 
 Vault is a __secure__ cross-platform KV store wrapped around GPG which makes team collaboraion extremely easy. 
 You can define as many Vaults as needed and use them rightaway without changing any configuration at all.
 
 
-#Why Vault?
+# Why Vault?
 
 1. Because security is something really important for us and we take it seriously
 2. It really simplifies the friction to work with GPG between multiple teams and recipients
@@ -16,7 +16,7 @@ You can define as many Vaults as needed and use them rightaway without changing 
 4. It was fun to do it and to learn during the process
 
 
-#What can I do with Vault?
+# What can I do with Vault?
 
 Using Vault is super easy. Below is the list of all the possible operations:
 
@@ -32,7 +32,7 @@ Using Vault is super easy. Below is the list of all the possible operations:
 ![recipients](https://cloud.githubusercontent.com/assets/1578458/10444397/5e543a6a-713c-11e5-98da-99dfd38e3b88.png)
 
 
-#This sounds cool, where do I get it?
+# This sounds cool, where do I get it?
 
 
 You can find Vault for your favorite distrution below:  
@@ -49,12 +49,12 @@ You can find Vault for your favorite distrution below:
 
 More distributions and source code can be found [here](https://github.com/franela/vault/releases)
 
-##Installing
+## Installing
 
 Download the correct binary for your distribution (clck images above) into your PATH and check that [GPG](https://www.gnupg.org/download/) installed.
 
 
-#Contributing
+# Contributing
 
 We're always working to improve vault, but if you find a bug or you just want to collaborate you can send us your PR (include tests when possible).
 
